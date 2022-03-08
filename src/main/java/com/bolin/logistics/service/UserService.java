@@ -26,23 +26,28 @@ public class UserService {
     @Autowired
     private UserMapper userMapper;
 
+    public User checkUser(String token) {
+        if (!JwtUtil.checkJwt(token)) {
+            throw new CustomizeException(CustomizeErrorCodeImpl.NO_LOGIN);
+        }
+        long id = JwtUtil.getId(token);
+        String password = JwtUtil.getPassword(token);
+        UserExample example = new UserExample();
+        example.createCriteria()
+                .andIdEqualTo(id)
+                .andPasswordEqualTo(password);
+        List<User> users = userMapper.selectByExample(example);
+        if (users.size() == 0) {
+            throw new CustomizeException(CustomizeErrorCodeImpl.USER_NOFOUND);
+        }
+        return users.get(0);
+    }
+
     @Transactional
     public CustomResponse addUser(String token, User user) {
         try {
-            if (!JwtUtil.checkJwt(token)) {
-                throw new CustomizeException(CustomizeErrorCodeImpl.NO_LOGIN);
-            }
-            long id = JwtUtil.getId(token);
-            String password = JwtUtil.getPassword(token);
-            UserExample example = new UserExample();
-            example.createCriteria()
-                    .andIdEqualTo(id)
-                    .andPasswordEqualTo(password);
-            List<User> users = userMapper.selectByExample(example);
-            if (users.size() == 0) {
-                throw new CustomizeException(CustomizeErrorCodeImpl.USER_NOFOUND);
-            }
-            if (users.get(0).getTypeId() != UserEnum.ADMIN.getType()) {
+            User checkedUser = checkUser(token);
+            if (checkedUser.getTypeId() != UserEnum.ADMIN.getType()) {
                 throw new CustomizeException(CustomizeErrorCodeImpl.AUTHORIZE_FAIL);
             }
             user.setGmtCreate(System.currentTimeMillis());
@@ -59,20 +64,8 @@ public class UserService {
     @Transactional
     public CustomResponse updateUserByAdmin(String token, User user) {
         try {
-            if (!JwtUtil.checkJwt(token)) {
-                throw new CustomizeException(CustomizeErrorCodeImpl.NO_LOGIN);
-            }
-            long id = JwtUtil.getId(token);
-            String password = JwtUtil.getPassword(token);
-            UserExample example = new UserExample();
-            example.createCriteria()
-                    .andIdEqualTo(id)
-                    .andPasswordEqualTo(password);
-            List<User> users = userMapper.selectByExample(example);
-            if (users.size() == 0) {
-                throw new CustomizeException(CustomizeErrorCodeImpl.USER_NOFOUND);
-            }
-            if (users.get(0).getTypeId() != UserEnum.ADMIN.getType()) {
+            User checkedUser = checkUser(token);
+            if (checkedUser.getTypeId() != UserEnum.ADMIN.getType()) {
                 throw new CustomizeException(CustomizeErrorCodeImpl.AUTHORIZE_FAIL);
             }
             if (!StringUtils.isEmpty(user.getPassword()))
@@ -91,19 +84,8 @@ public class UserService {
     @Transactional
     public CustomResponse updateUserByUser(String token, User user) {
         try {
-            if (!JwtUtil.checkJwt(token)) {
-                throw new CustomizeException(CustomizeErrorCodeImpl.NO_LOGIN);
-            }
-            long id = JwtUtil.getId(token);
-            String password = JwtUtil.getPassword(token);
-            UserExample example = new UserExample();
-            example.createCriteria()
-                    .andIdEqualTo(id)
-                    .andPasswordEqualTo(password);
-            List<User> users = userMapper.selectByExample(example);
-            if (users.size() == 0) {
-                throw new CustomizeException(CustomizeErrorCodeImpl.USER_NOFOUND);
-            }
+            User checkedUser = checkUser(token);
+            long id = checkedUser.getId();
             if (!StringUtils.isEmpty(user.getPassword()))
                 user.setPassword(MD5Utils.stringToMD5(user.getPassword()));
             user.setGmtModified(System.currentTimeMillis());
@@ -120,20 +102,8 @@ public class UserService {
     @Transactional
     public CustomResponse deleteUser(String token, long userid) {
         try {
-            if (!JwtUtil.checkJwt(token)) {
-                throw new CustomizeException(CustomizeErrorCodeImpl.NO_LOGIN);
-            }
-            long id = JwtUtil.getId(token);
-            String password = JwtUtil.getPassword(token);
-            UserExample example = new UserExample();
-            example.createCriteria()
-                    .andIdEqualTo(id)
-                    .andPasswordEqualTo(password);
-            List<User> users = userMapper.selectByExample(example);
-            if (users.size() == 0) {
-                throw new CustomizeException(CustomizeErrorCodeImpl.USER_NOFOUND);
-            }
-            if (users.get(0).getTypeId() != UserEnum.ADMIN.getType()) {
+            User checkedUser = checkUser(token);
+            if (checkedUser.getTypeId() != UserEnum.ADMIN.getType()) {
                 throw new CustomizeException(CustomizeErrorCodeImpl.AUTHORIZE_FAIL);
             }
             UserExample userExample = new UserExample();
@@ -148,20 +118,8 @@ public class UserService {
 
     public CustomResponse selectUserById(String token, long userid) {
         try {
-            if (!JwtUtil.checkJwt(token)) {
-                throw new CustomizeException(CustomizeErrorCodeImpl.NO_LOGIN);
-            }
-            long id = JwtUtil.getId(token);
-            String password = JwtUtil.getPassword(token);
-            UserExample example = new UserExample();
-            example.createCriteria()
-                    .andIdEqualTo(id)
-                    .andPasswordEqualTo(password);
-            List<User> users = userMapper.selectByExample(example);
-            if (users.size() == 0) {
-                throw new CustomizeException(CustomizeErrorCodeImpl.USER_NOFOUND);
-            }
-            if (users.get(0).getTypeId() != UserEnum.ADMIN.getType()) {
+            User checkedUser = checkUser(token);
+            if (checkedUser.getTypeId() != UserEnum.ADMIN.getType()) {
                 throw new CustomizeException(CustomizeErrorCodeImpl.AUTHORIZE_FAIL);
             }
             UserExample userExample = new UserExample();
