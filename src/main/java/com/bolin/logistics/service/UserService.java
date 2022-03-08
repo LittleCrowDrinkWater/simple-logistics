@@ -13,8 +13,10 @@ import com.bolin.logistics.utils.MD5Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
@@ -49,6 +51,7 @@ public class UserService {
             userMapper.insert(user);
             return CustomResponse.addSuccess();
         } catch (Exception e) {
+            e.printStackTrace();
             return CustomResponse.addFailed();
         }
     }
@@ -72,6 +75,8 @@ public class UserService {
             if (users.get(0).getTypeId() != UserEnum.ADMIN.getType()) {
                 throw new CustomizeException(CustomizeErrorCodeImpl.AUTHORIZE_FAIL);
             }
+            if (!StringUtils.isEmpty(user.getPassword()))
+                user.setPassword(MD5Utils.stringToMD5(user.getPassword()));
             user.setGmtModified(System.currentTimeMillis());
             UserExample userExample = new UserExample();
             userExample.createCriteria()
@@ -99,6 +104,8 @@ public class UserService {
             if (users.size() == 0) {
                 throw new CustomizeException(CustomizeErrorCodeImpl.USER_NOFOUND);
             }
+            if (!StringUtils.isEmpty(user.getPassword()))
+                user.setPassword(MD5Utils.stringToMD5(user.getPassword()));
             user.setGmtModified(System.currentTimeMillis());
             UserExample userExample = new UserExample();
             userExample.createCriteria()
@@ -169,6 +176,7 @@ public class UserService {
 
     public CustomResponse login(String telOrEmailOrName, String password, HttpServletResponse response) {
         try {
+            password = MD5Utils.stringToMD5(password);
             UserExample example = new UserExample();
             UserExample.Criteria criteria = example.createCriteria();
             UserExample.Criteria criteria1 = example.createCriteria();
@@ -187,8 +195,12 @@ public class UserService {
                 throw new CustomizeException(CustomizeErrorCodeImpl.USER_NOFOUND);
             }
             User user = users.get(0);
-
             String token = JwtUtil.generateJwtToken(user.getId(), user.getPassword());
+            user.setGmtLastLogin(System.currentTimeMillis());
+            UserExample userExample = new UserExample();
+            userExample.createCriteria()
+                    .andIdEqualTo(user.getId());
+            userMapper.updateByExampleSelective(user , userExample);
             response.addCookie(new Cookie("token", token));
             return CustomResponse.success();
         } catch (Exception e) {
@@ -196,13 +208,15 @@ public class UserService {
         }
     }
 
-    public CustomResponse logout(HttpServletResponse response) {
+    public CustomResponse logout(HttpServletRequest request, HttpServletResponse response) {
         try {
-            response.addCookie(new Cookie("token", ""));
+            request.getSession().removeAttribute("token");
+            Cookie cookie = new Cookie("token", "");
+            cookie.setMaxAge(0);
+            response.addCookie(cookie);
             return CustomResponse.success();
         } catch (Exception e) {
             return CustomResponse.fail();
         }
     }
-
 }

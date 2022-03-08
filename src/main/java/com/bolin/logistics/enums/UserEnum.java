@@ -1,10 +1,11 @@
 package com.bolin.logistics.enums;
 
 public enum UserEnum {
-    ADMIN(0 , "管理员"),
-    DRIVER(1 , "司机"),
-    OPERATOR(3 , "操作员"),
-    CUSTOMER(4 , "客户");
+    ADMIN(1 , "管理员"),
+    DRIVER(2 , "司机"),
+    CUSTOMER(3 , "客户"),
+    OPERATOR(4 , "操作员"),
+    FINANCE_STAFF(5 , "财务人员");
 
     private int type;
     private String message;
