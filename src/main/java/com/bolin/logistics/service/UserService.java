@@ -160,7 +160,7 @@ public class UserService {
                     .andIdEqualTo(user.getId());
             userMapper.updateByExampleSelective(user , userExample);
             response.addCookie(new Cookie("token", token));
-            return CustomResponse.success();
+            return CustomResponse.success(user);
         } catch (Exception e) {
             return CustomResponse.queryFailed();
         }

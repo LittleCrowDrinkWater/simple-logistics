@@ -11,7 +11,7 @@ import java.util.Map;
 
 @Api("仓库地址关联相关控制器")
 @RestController
-@RequestMapping(("/location"))
+@RequestMapping(("/Warehouse"))
 public class WarehouserController {
 
     @Autowired

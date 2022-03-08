@@ -1,11 +1,12 @@
 package com.bolin.logistics.service;
 
+
 import com.bolin.logistics.enums.UserEnum;
 import com.bolin.logistics.exception.CustomizeErrorCodeImpl;
 import com.bolin.logistics.exception.CustomizeException;
-import com.bolin.logistics.mapper.LocationMapper;
-import com.bolin.logistics.model.Location;
-import com.bolin.logistics.model.LocationExample;
+import com.bolin.logistics.mapper.CarMapper;
+import com.bolin.logistics.model.Car;
+import com.bolin.logistics.model.CarExample;
 import com.bolin.logistics.model.User;
 import com.bolin.logistics.utils.CustomResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,21 +14,20 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-public class LocationService {
-
+public class CarService {
     @Autowired
-    private LocationMapper locationMapper;
+    private CarMapper carMapper;
     @Autowired
     private UserService userService;
 
     @Transactional
-    public CustomResponse addLocation(String token, Location location) {
+    public CustomResponse addCar(String token, Car car) {
         try {
             User checkedUser = userService.checkUser(token);
             if (checkedUser.getTypeId() != UserEnum.ADMIN.getType()) {
                 throw new CustomizeException(CustomizeErrorCodeImpl.AUTHORIZE_FAIL);
             }
-            locationMapper.insert(location);
+            carMapper.insert(car);
             return CustomResponse.addSuccess();
         } catch (Exception e) {
             e.printStackTrace();
@@ -36,38 +36,39 @@ public class LocationService {
     }
 
     @Transactional
-    public CustomResponse updateLocation(String token, Location location) {
+    public CustomResponse updateCar(String token, Car car) {
         try {
             User checkedUser = userService.checkUser(token);
             if (checkedUser.getTypeId() != UserEnum.ADMIN.getType()) {
                 throw new CustomizeException(CustomizeErrorCodeImpl.AUTHORIZE_FAIL);
             }
-            LocationExample example = new LocationExample();
+            CarExample example = new CarExample();
             example.createCriteria()
-                    .andIdEqualTo(location.getId());
-            locationMapper.updateByExampleSelective(location, example);
-            return CustomResponse.updateSuccess();
+                    .andIdEqualTo(car.getId());
+            carMapper.updateByExampleSelective(car , example);
+            return CustomResponse.addSuccess();
         } catch (Exception e) {
-            return CustomResponse.updateFailed();
+            e.printStackTrace();
+            return CustomResponse.addFailed();
         }
     }
 
     @Transactional
-    public CustomResponse deleteLocation(String token, int locationId) {
+    public CustomResponse deleteCar(String token, long carId) {
         try {
             User checkedUser = userService.checkUser(token);
             if (checkedUser.getTypeId() != UserEnum.ADMIN.getType()) {
                 throw new CustomizeException(CustomizeErrorCodeImpl.AUTHORIZE_FAIL);
             }
-            LocationExample locationExample = new LocationExample();
-            locationExample.createCriteria()
-                    .andIdEqualTo(locationId);
-            locationMapper.deleteByExample(locationExample);
-            return CustomResponse.updateSuccess();
+            CarExample example = new CarExample();
+            example.createCriteria()
+                    .andIdEqualTo(carId);
+            carMapper.deleteByExample(example);
+            return CustomResponse.addSuccess();
         } catch (Exception e) {
-            return CustomResponse.updateFailed();
+            e.printStackTrace();
+            return CustomResponse.addFailed();
         }
     }
-
 
 }
