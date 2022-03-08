@@ -9,8 +9,7 @@ public enum ResponseEnum {
     SUCCESS_DELETE(0,"删除成功!"),
     FAILED_DELETE(0,"删除失败!"),
     FAILED_QUERY(0,"暂无数据!"),
-    FAILED_REVOKE(0,"撤销失败!"),
-    SUCCESS_REVOKE(0,"撤销成功!"),
+    FAILED(0,"请求失败!"),
 ;
 
     private int code;
