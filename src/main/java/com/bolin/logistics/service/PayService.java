@@ -1,12 +1,11 @@
 package com.bolin.logistics.service;
 
-
 import com.bolin.logistics.enums.UserEnum;
 import com.bolin.logistics.exception.CustomizeErrorCodeImpl;
 import com.bolin.logistics.exception.CustomizeException;
-import com.bolin.logistics.mapper.CarMapper;
-import com.bolin.logistics.model.Car;
-import com.bolin.logistics.model.CarExample;
+import com.bolin.logistics.mapper.PayMapper;
+import com.bolin.logistics.model.Pay;
+import com.bolin.logistics.model.PayExample;
 import com.bolin.logistics.model.User;
 import com.bolin.logistics.utils.CustomResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,20 +13,20 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-public class CarService {
+public class PayService {
     @Autowired
-    private CarMapper carMapper;
+    private PayMapper payMapper;
     @Autowired
     private UserService userService;
 
     @Transactional
-    public CustomResponse addCar(String token, Car car) {
+    public CustomResponse addPay(String token, Pay pay) {
         try {
             User checkedUser = userService.checkUser(token);
             if (checkedUser.getTypeId() != UserEnum.ADMIN.getType() || checkedUser.getTypeId() != UserEnum.OPERATOR.getType()) {
                 throw new CustomizeException(CustomizeErrorCodeImpl.AUTHORIZE_FAIL);
             }
-            carMapper.insert(car);
+            payMapper.insert(pay);
             return CustomResponse.addSuccess();
         } catch (Exception e) {
             e.printStackTrace();
@@ -36,16 +35,16 @@ public class CarService {
     }
 
     @Transactional
-    public CustomResponse updateCar(String token, Car car) {
+    public CustomResponse updatePay(String token, Pay pay) {
         try {
             User checkedUser = userService.checkUser(token);
             if (checkedUser.getTypeId() != UserEnum.ADMIN.getType() || checkedUser.getTypeId() != UserEnum.OPERATOR.getType()) {
                 throw new CustomizeException(CustomizeErrorCodeImpl.AUTHORIZE_FAIL);
             }
-            CarExample example = new CarExample();
+            PayExample example = new PayExample();
             example.createCriteria()
-                    .andIdEqualTo(car.getId());
-            carMapper.updateByExampleSelective(car , example);
+                    .andIdEqualTo(pay.getId());
+            payMapper.updateByExampleSelective(pay , example);
             return CustomResponse.addSuccess();
         } catch (Exception e) {
             e.printStackTrace();
@@ -54,21 +53,20 @@ public class CarService {
     }
 
     @Transactional
-    public CustomResponse deleteCar(String token, long carId) {
+    public CustomResponse deletePay(String token, long payId) {
         try {
             User checkedUser = userService.checkUser(token);
             if (checkedUser.getTypeId() != UserEnum.ADMIN.getType() || checkedUser.getTypeId() != UserEnum.OPERATOR.getType()) {
                 throw new CustomizeException(CustomizeErrorCodeImpl.AUTHORIZE_FAIL);
             }
-            CarExample example = new CarExample();
+            PayExample example = new PayExample();
             example.createCriteria()
-                    .andIdEqualTo(carId);
-            carMapper.deleteByExample(example);
+                    .andIdEqualTo(payId);
+            payMapper.deleteByExample(example);
             return CustomResponse.addSuccess();
         } catch (Exception e) {
             e.printStackTrace();
             return CustomResponse.addFailed();
         }
     }
-
 }
