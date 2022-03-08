@@ -1,16 +1,16 @@
 package com.bolin.logistics.enums;
 
 public enum ResponseEnum {
-    SUCCESS(0,"请求成功!"),
-    SUCCESS_ADD(0,"新增成功!"),
-    FAILED_ADD(0,"新增失败!"),
-    SUCCESS_UPDATE(0,"更新成功!"),
-    FAILED_UPDATE(0,"更新失败!"),
-    SUCCESS_DELETE(0,"删除成功!"),
-    FAILED_DELETE(0,"删除失败!"),
-    FAILED_QUERY(0,"暂无数据!"),
-    FAILED(0,"请求失败!"),
-;
+    SUCCESS(2000,"请求成功!"),
+    FAILED(4000,"请求失败!"),
+    SUCCESS_ADD(2001,"新增成功!"),
+    FAILED_ADD(4001,"新增失败!"),
+    SUCCESS_UPDATE(2002,"更新成功!"),
+    FAILED_UPDATE(4002,"更新失败!"),
+    SUCCESS_DELETE(2003,"删除成功!"),
+    FAILED_DELETE(4003,"删除失败!"),
+    FAILED_QUERY(4004,"暂无数据!")
+    ;
 
     private int code;
     private String describe;

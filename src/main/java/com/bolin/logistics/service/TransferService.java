@@ -29,6 +29,8 @@ public class TransferService {
             if (checkedUser.getTypeId() == UserEnum.DRIVER.getType() || checkedUser.getTypeId() == UserEnum.FINANCE_STAFF.getType()) {
                 throw new CustomizeException(CustomizeErrorCodeImpl.AUTHORIZE_FAIL);
             }
+            transferInfo.setGmtCreate(System.currentTimeMillis());
+            transferInfo.setGmtModified(System.currentTimeMillis());
             transferInfoMapper.insert(transferInfo);
             return CustomResponse.addSuccess();
         } catch (Exception e) {
@@ -44,6 +46,7 @@ public class TransferService {
             if (checkedUser.getTypeId() == UserEnum.DRIVER.getType() || checkedUser.getTypeId() == UserEnum.FINANCE_STAFF.getType()) {
                 throw new CustomizeException(CustomizeErrorCodeImpl.AUTHORIZE_FAIL);
             }
+            transferInfo.setGmtModified(System.currentTimeMillis());
             TransferInfoExample example = new TransferInfoExample();
             example.createCriteria()
                     .andIdEqualTo(transferInfo.getId());

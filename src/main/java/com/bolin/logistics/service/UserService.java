@@ -10,6 +10,7 @@ import com.bolin.logistics.model.UserExample;
 import com.bolin.logistics.utils.CustomResponse;
 import com.bolin.logistics.utils.JwtUtil;
 import com.bolin.logistics.utils.MD5Utils;
+import org.apache.ibatis.session.RowBounds;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -175,6 +176,22 @@ public class UserService {
             return CustomResponse.success();
         } catch (Exception e) {
             return CustomResponse.fail();
+        }
+    }
+
+    public CustomResponse list(String token , int page , int size) {
+        try {
+            User checkedUser = checkUser(token);
+            if (checkedUser.getTypeId() != UserEnum.ADMIN.getType()) {
+                throw new CustomizeException(CustomizeErrorCodeImpl.AUTHORIZE_FAIL);
+            }
+            int offset = size * (page - 1);
+            UserExample example = new UserExample();
+            example.setOrderByClause("gmt_modified desc");
+            List<User> users = userMapper.selectByExampleWithRowbounds(example, new RowBounds(offset, size));
+            return CustomResponse.success(users);
+        } catch (Exception e) {
+            return CustomResponse.queryFailed();
         }
     }
 }

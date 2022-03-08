@@ -29,6 +29,8 @@ public class GoodsService {
             if (checkedUser.getTypeId() == UserEnum.DRIVER.getType() || checkedUser.getTypeId() == UserEnum.FINANCE_STAFF.getType()) {
                 throw new CustomizeException(CustomizeErrorCodeImpl.AUTHORIZE_FAIL);
             }
+            goodsInfo.setGmtCreate(System.currentTimeMillis());
+            goodsInfo.setGmtModified(System.currentTimeMillis());
             goodsInfoMapper.insert(goodsInfo);
             return CustomResponse.addSuccess();
         } catch (Exception e) {
@@ -44,6 +46,7 @@ public class GoodsService {
             if (checkedUser.getTypeId() == UserEnum.DRIVER.getType() || checkedUser.getTypeId() == UserEnum.FINANCE_STAFF.getType()) {
                 throw new CustomizeException(CustomizeErrorCodeImpl.AUTHORIZE_FAIL);
             }
+            goodsInfo.setGmtModified(System.currentTimeMillis());
             GoodsInfoExample example = new GoodsInfoExample();
             example.createCriteria()
                     .andIdEqualTo(goodsInfo.getId());

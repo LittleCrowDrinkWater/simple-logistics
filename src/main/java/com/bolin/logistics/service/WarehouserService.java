@@ -7,9 +7,12 @@ import com.bolin.logistics.exception.CustomizeException;
 import com.bolin.logistics.mapper.WarehouseMapper;
 import com.bolin.logistics.model.*;
 import com.bolin.logistics.utils.CustomResponse;
+import org.apache.ibatis.session.RowBounds;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 public class WarehouserService {
@@ -25,6 +28,8 @@ public class WarehouserService {
             if (checkedUser.getTypeId() != UserEnum.ADMIN.getType()) {
                 throw new CustomizeException(CustomizeErrorCodeImpl.AUTHORIZE_FAIL);
             }
+            warehouse.setGmtCreate(System.currentTimeMillis());
+            warehouse.setGmtModified(System.currentTimeMillis());
             warehouseMapper.insert(warehouse);
             return CustomResponse.addSuccess();
         } catch (Exception e) {
@@ -40,6 +45,7 @@ public class WarehouserService {
             if (checkedUser.getTypeId() != UserEnum.ADMIN.getType()) {
                 throw new CustomizeException(CustomizeErrorCodeImpl.AUTHORIZE_FAIL);
             }
+            warehouse.setGmtModified(System.currentTimeMillis());
             WarehouseExample example = new WarehouseExample();
             example.createCriteria()
                     .andIdEqualTo(warehouse.getId());
@@ -64,6 +70,22 @@ public class WarehouserService {
             return CustomResponse.updateSuccess();
         } catch (Exception e) {
             return CustomResponse.updateFailed();
+        }
+    }
+
+    public CustomResponse list(String token , int page , int size) {
+        try {
+            User checkedUser = userService.checkUser(token);
+            if (checkedUser.getTypeId() != UserEnum.ADMIN.getType()) {
+                throw new CustomizeException(CustomizeErrorCodeImpl.AUTHORIZE_FAIL);
+            }
+            int offset = size * (page - 1);
+            WarehouseExample example = new WarehouseExample();
+            example.setOrderByClause("gmt_modified desc");
+            List<Warehouse> warehouses = warehouseMapper.selectByExampleWithRowbounds(example, new RowBounds(offset, size));
+            return CustomResponse.success(warehouses);
+        } catch (Exception e) {
+            return CustomResponse.queryFailed();
         }
     }
 }

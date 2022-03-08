@@ -27,6 +27,8 @@ public class CarService {
             if (checkedUser.getTypeId() != UserEnum.ADMIN.getType() || checkedUser.getTypeId() != UserEnum.OPERATOR.getType()) {
                 throw new CustomizeException(CustomizeErrorCodeImpl.AUTHORIZE_FAIL);
             }
+            car.setGmtCreate(System.currentTimeMillis());
+            car.setGmtModified(System.currentTimeMillis());
             carMapper.insert(car);
             return CustomResponse.addSuccess();
         } catch (Exception e) {
@@ -42,6 +44,7 @@ public class CarService {
             if (checkedUser.getTypeId() != UserEnum.ADMIN.getType() || checkedUser.getTypeId() != UserEnum.OPERATOR.getType()) {
                 throw new CustomizeException(CustomizeErrorCodeImpl.AUTHORIZE_FAIL);
             }
+            car.setGmtModified(System.currentTimeMillis());
             CarExample example = new CarExample();
             example.createCriteria()
                     .andIdEqualTo(car.getId());

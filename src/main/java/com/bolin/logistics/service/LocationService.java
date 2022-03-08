@@ -27,6 +27,8 @@ public class LocationService {
             if (checkedUser.getTypeId() != UserEnum.ADMIN.getType()) {
                 throw new CustomizeException(CustomizeErrorCodeImpl.AUTHORIZE_FAIL);
             }
+            location.setGmtCreate(System.currentTimeMillis());
+            location.setGmtModified(System.currentTimeMillis());
             locationMapper.insert(location);
             return CustomResponse.addSuccess();
         } catch (Exception e) {
@@ -42,6 +44,7 @@ public class LocationService {
             if (checkedUser.getTypeId() != UserEnum.ADMIN.getType()) {
                 throw new CustomizeException(CustomizeErrorCodeImpl.AUTHORIZE_FAIL);
             }
+            location.setGmtModified(System.currentTimeMillis());
             LocationExample example = new LocationExample();
             example.createCriteria()
                     .andIdEqualTo(location.getId());

@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-//获取到配置文件并解析,都是固定代码,copy即可
+//获取到配置文件并解析生成对应的mapper及model
 public class Generate {
     public static void main(String[] args) {
         List<String> warings = new ArrayList<String>();

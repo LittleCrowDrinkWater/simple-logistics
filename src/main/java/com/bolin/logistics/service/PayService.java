@@ -26,6 +26,8 @@ public class PayService {
             if (checkedUser.getTypeId() != UserEnum.ADMIN.getType() || checkedUser.getTypeId() != UserEnum.OPERATOR.getType()) {
                 throw new CustomizeException(CustomizeErrorCodeImpl.AUTHORIZE_FAIL);
             }
+            pay.setGmtCreate(System.currentTimeMillis());
+            pay.setGmtModified(System.currentTimeMillis());
             payMapper.insert(pay);
             return CustomResponse.addSuccess();
         } catch (Exception e) {
@@ -41,6 +43,7 @@ public class PayService {
             if (checkedUser.getTypeId() != UserEnum.ADMIN.getType() || checkedUser.getTypeId() != UserEnum.OPERATOR.getType()) {
                 throw new CustomizeException(CustomizeErrorCodeImpl.AUTHORIZE_FAIL);
             }
+            pay.setGmtModified(System.currentTimeMillis());
             PayExample example = new PayExample();
             example.createCriteria()
                     .andIdEqualTo(pay.getId());
