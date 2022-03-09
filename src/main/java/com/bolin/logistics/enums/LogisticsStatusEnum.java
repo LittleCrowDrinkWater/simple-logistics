@@ -4,10 +4,11 @@ package com.bolin.logistics.enums;
 
 public enum LogisticsStatusEnum {
     WAIT_OPERATION(1,"待处理"),
-    WAIT_PAYMENT(2,"等待支付"),
-    IN_WAREHOUSE(3,"在仓库中，等待调配"),
-    IN_TRANSIT(4,"运输中"),
-    ARCHIVE(5,"完成存档")
+    IN_DELEVERY(2,"出库中"),
+    IN_STORAGE(3,"入库中"),
+    IN_WAREHOUSE(4,"在仓库中，等待调配"),
+    IN_TRANSIT(5,"运输中"),
+    ARCHIVE(6,"完成存档")
     ;
 
 

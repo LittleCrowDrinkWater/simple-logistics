@@ -1,10 +1,11 @@
 package com.bolin.logistics.exception;
 
 public enum CustomizeErrorCodeImpl implements CustomizeErrorCode {
-    AUTHORIZE_FAIL(2001,"鉴定权限失败"),
-    NO_LOGIN(2002,"当前操作需要登录,请登陆后重试"),
-    SYS_ERROR(2003,"未知的系统错误"),
-    USER_NOFOUND(2004,"查无此用户")
+    AUTHORIZE_FAIL(5001,"鉴定权限失败"),
+    NO_LOGIN(5002,"当前操作需要登录,请登陆后重试"),
+    SYS_ERROR(5003,"未知的系统错误"),
+    USER_NOFOUND(5004,"查无此用户"),
+    EXIST_TRANSFER_ORDER(5005,"存在转运单")
     ;
 
     CustomizeErrorCodeImpl(Integer code, String message) {

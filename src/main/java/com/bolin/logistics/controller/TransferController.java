@@ -31,14 +31,44 @@ public class TransferController {
         return transferService.addTransferInfo(token, transferInfo);
     }
 
-    @ApiOperation(value = "修改中转运单", notes = "修改中转运单,传入id和需要修改的字段,无需修改的字段传空即可", produces = "application/json")
+    @ApiOperation(value = "出库", notes = "修改中转运单,传入id和需要修改的字段,无需修改的字段传空即可", produces = "application/json")
     @ApiResponses({
             @ApiResponse(code = 2002, message = "更新成功"),
             @ApiResponse(code = 4002, message = "更新失败")
     })
-    @PostMapping("/updateTransfer")
-    public CustomResponse updateGoods(@RequestBody TransferInfo transferInfo, @CookieValue("token") String token) {
-        return transferService.updateTransferInfo(token, transferInfo);
+    @PostMapping("/deliver/{id}")
+    public CustomResponse updateGoods(@PathVariable("id") String id, @CookieValue("token") String token) {
+        return transferService.deliver(id, token);
+    }
+
+    @ApiOperation(value = "司机接货", notes = "修改中转运单,传入id和需要修改的字段,无需修改的字段传空即可", produces = "application/json")
+    @ApiResponses({
+            @ApiResponse(code = 2002, message = "更新成功"),
+            @ApiResponse(code = 4002, message = "更新失败")
+    })
+    @PostMapping("/driverAccept/{id}")
+    public CustomResponse driverAccept(@PathVariable("id") String id, @CookieValue("token") String token) {
+        return transferService.driverAccept(id, token);
+    }
+
+    @ApiOperation(value = "司机抵达", notes = "修改中转运单,传入id和需要修改的字段,无需修改的字段传空即可", produces = "application/json")
+    @ApiResponses({
+            @ApiResponse(code = 2002, message = "更新成功"),
+            @ApiResponse(code = 4002, message = "更新失败")
+    })
+    @PostMapping("/driverArrive/{id}")
+    public CustomResponse driverArrive(@PathVariable("id") String id, @CookieValue("token") String token) {
+        return transferService.driverArrive(id, token);
+    }
+
+    @ApiOperation(value = "入库", notes = "修改中转运单,传入id和需要修改的字段,无需修改的字段传空即可", produces = "application/json")
+    @ApiResponses({
+            @ApiResponse(code = 2002, message = "更新成功"),
+            @ApiResponse(code = 4002, message = "更新失败")
+    })
+    @PostMapping("/storage/{id}")
+    public CustomResponse storage(@PathVariable("id") String id, @CookieValue("token") String token) {
+        return transferService.storage(id, token);
     }
 
     @ApiOperation(value = "删除中转运单", notes = "删除中转运单时,传入\"id\":id，后端封装在map里读取", produces = "application/json")
