@@ -4,8 +4,6 @@
         "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
 <generatorConfiguration>
     <context id="DB2Tables" targetRuntime="MyBatis3">
-        <!--mybatis 分页插件-->
-        <plugin type="org.mybatis.generator.plugins.RowBoundsPlugin"></plugin>
         <!-- 1、jdbcConnection 配置数据库连接信息。-->
         <jdbcConnection
                 driverClass="com.mysql.cj.jdbc.Driver"

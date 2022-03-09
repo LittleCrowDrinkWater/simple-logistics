@@ -179,19 +179,19 @@ public class UserService {
         }
     }
 
-    public CustomResponse list(String token , int page , int size) {
-        try {
-            User checkedUser = checkUser(token);
-            if (checkedUser.getTypeId() != UserEnum.ADMIN.getType()) {
-                throw new CustomizeException(CustomizeErrorCodeImpl.AUTHORIZE_FAIL);
-            }
-            int offset = size * (page - 1);
-            UserExample example = new UserExample();
-            example.setOrderByClause("gmt_modified desc");
-            List<User> users = userMapper.selectByExampleWithRowbounds(example, new RowBounds(offset, size));
-            return CustomResponse.success(users);
-        } catch (Exception e) {
-            return CustomResponse.queryFailed();
-        }
-    }
+//    public CustomResponse list(String token , int page , int size) {
+//        try {
+//            User checkedUser = checkUser(token);
+//            if (checkedUser.getTypeId() != UserEnum.ADMIN.getType()) {
+//                throw new CustomizeException(CustomizeErrorCodeImpl.AUTHORIZE_FAIL);
+//            }
+//            int offset = size * (page - 1);
+//            UserExample example = new UserExample();
+//            example.setOrderByClause("gmt_modified desc");
+//            List<User> users = userMapper.selectByExampleWithRowbounds(example, new RowBounds(offset, size));
+//            return CustomResponse.success(users);
+//        } catch (Exception e) {
+//            return CustomResponse.queryFailed();
+//        }
+//    }
 }

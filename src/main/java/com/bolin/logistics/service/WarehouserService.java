@@ -73,19 +73,19 @@ public class WarehouserService {
         }
     }
 
-    public CustomResponse list(String token , int page , int size) {
-        try {
-            User checkedUser = userService.checkUser(token);
-            if (checkedUser.getTypeId() != UserEnum.ADMIN.getType()) {
-                throw new CustomizeException(CustomizeErrorCodeImpl.AUTHORIZE_FAIL);
-            }
-            int offset = size * (page - 1);
-            WarehouseExample example = new WarehouseExample();
-            example.setOrderByClause("gmt_modified desc");
-            List<Warehouse> warehouses = warehouseMapper.selectByExampleWithRowbounds(example, new RowBounds(offset, size));
-            return CustomResponse.success(warehouses);
-        } catch (Exception e) {
-            return CustomResponse.queryFailed();
-        }
-    }
+//    public CustomResponse list(String token , int page , int size) {
+//        try {
+//            User checkedUser = userService.checkUser(token);
+//            if (checkedUser.getTypeId() != UserEnum.ADMIN.getType()) {
+//                throw new CustomizeException(CustomizeErrorCodeImpl.AUTHORIZE_FAIL);
+//            }
+//            int offset = size * (page - 1);
+//            WarehouseExample example = new WarehouseExample();
+//            example.setOrderByClause("gmt_modified desc");
+//            List<Warehouse> warehouses = warehouseMapper.selectByExampleWithRowbounds(example, new RowBounds(offset, size));
+//            return CustomResponse.success(warehouses);
+//        } catch (Exception e) {
+//            return CustomResponse.queryFailed();
+//        }
+//    }
 }
