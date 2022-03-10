@@ -179,6 +179,21 @@ public class UserService {
         }
     }
 
+    @Transactional
+    public CustomResponse register(User user) {
+        try {
+            user.setGmtCreate(System.currentTimeMillis());
+            user.setGmtModified(System.currentTimeMillis());
+            user.setPassword(MD5Utils.stringToMD5(user.getPassword()));
+            user.setTypeId(UserEnum.CUSTOMER.getType());
+            userMapper.insert(user);
+            return CustomResponse.addSuccess();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return CustomResponse.addFailed();
+        }
+    }
+
 //    public CustomResponse list(String token , int page , int size) {
 //        try {
 //            User checkedUser = checkUser(token);

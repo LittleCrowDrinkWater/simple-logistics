@@ -27,6 +27,16 @@ public class UserController {
         return userService.addUser(token, user);
     }
 
+    @ApiOperation(value = "客户注册", notes = "前端传入User对象时，需要tel、email、name和password", produces = "application/json")
+    @ApiResponses({
+            @ApiResponse(code = 2001, message = "新增成功"),
+            @ApiResponse(code = 4001, message = "新增失败")
+    })
+    @PostMapping("/register")
+    public CustomResponse register(@RequestBody User user) {
+        return userService.register(user);
+    }
+
     @ApiOperation(value = "修改用户", notes = "修改用户时传入用户id和需要修改的字段，无需修改的字段传空即可", produces = "application/json")
     @ApiResponses({
             @ApiResponse(code = 2002, message = "更新成功"),
