@@ -83,4 +83,15 @@ public class TransferController {
         long id = Long.parseLong(temp);
         return transferService.deleteTransferInfo(request, id);
     }
+
+    @ApiOperation(value = "按照类型查询中转运单", notes = "按照类型查询中转运单，对于ADMIN，查询所有中转单，对于OPERATOR，查询其负责的所有活跃的中转单，" +
+            "对于DRIVER,查询其负责的所有活跃的中转单，对于customer，查询所有其是发货或收货人的运单")
+    @ApiResponses({
+            @ApiResponse(code = 2000, message = "请求成功"),
+            @ApiResponse(code = 4000, message = "请求失败")
+    })
+    @GetMapping("/list")
+    public CustomResponse listByType(@RequestParam int page, @RequestParam int size , HttpServletRequest request) {
+        return transferService.list( page, size, request);
+    }
 }

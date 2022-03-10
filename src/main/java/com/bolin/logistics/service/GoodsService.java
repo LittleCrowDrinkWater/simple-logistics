@@ -13,6 +13,7 @@ import com.bolin.logistics.mapper.WarehouseMapper;
 import com.bolin.logistics.model.*;
 import com.bolin.logistics.utils.CustomResponse;
 import com.bolin.logistics.utils.OrderNumGenUtil;
+import com.github.pagehelper.PageHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -252,6 +253,62 @@ public class GoodsService {
         }catch (Exception e) {
             e.printStackTrace();
             return CustomResponse.deleteFailed();
+        }
+    }
+
+    public CustomResponse list(int page, int size, HttpServletRequest request) {
+        try {
+            User checkedUser = userService.checkUser(request);
+            if (checkedUser.getTypeId() == UserEnum.ADMIN.getType()) {
+                GoodsInfoExample example = new GoodsInfoExample();
+                example.setOrderByClause("gmt_modified");
+                PageHelper.startPage(page , size);
+                List<GoodsInfo> goodsInfos = goodsInfoMapper.selectByExample(example);
+                return CustomResponse.success(goodsInfos);
+            }
+            if (checkedUser.getTypeId() == UserEnum.OPERATOR.getType()) {
+                GoodsInfoExample example = new GoodsInfoExample();
+                example.createCriteria()
+                        .andOperateUserIdEqualTo(checkedUser.getId())
+                        .andStatusNotEqualTo(LogisticsStatusEnum.ARCHIVE.getType())
+                        .andStatusNotEqualTo(LogisticsStatusEnum.IN_TRANSIT.getType());
+                example.setOrderByClause("gmt_modified");
+                PageHelper.startPage(page , size);
+                List<GoodsInfo> goodsInfos = goodsInfoMapper.selectByExample(example);
+                return CustomResponse.success(goodsInfos);
+            }
+            if (checkedUser.getTypeId() == UserEnum.DRIVER.getType()) {
+                CarExample carExample = new CarExample();
+                carExample.createCriteria()
+                        .andUserIdEqualTo(checkedUser.getId());
+                List<Car> cars = carMapper.selectByExample(carExample);
+
+                GoodsInfoExample example = new GoodsInfoExample();
+                example.createCriteria()
+                        .andCarIdEqualTo(cars.get(0).getId())
+                        .andStatusNotEqualTo(LogisticsStatusEnum.ARCHIVE.getType())
+                        .andStatusNotEqualTo(LogisticsStatusEnum.IN_WAREHOUSE.getType());
+                example.setOrderByClause("gmt_modified");
+                PageHelper.startPage(page , size);
+                List<GoodsInfo> goodsInfos = goodsInfoMapper.selectByExample(example);
+                return CustomResponse.success(goodsInfos);
+            }
+            if (checkedUser.getTypeId() == UserEnum.CUSTOMER.getType()) {
+                GoodsInfoExample example = new GoodsInfoExample();
+                GoodsInfoExample.Criteria criteria1 = example.createCriteria();
+                GoodsInfoExample.Criteria criteria2 = example.createCriteria();
+                criteria1.andSendGoodsUserIdEqualTo(checkedUser.getId());
+                criteria2.andReceiveUserIdEqualTo(checkedUser.getId());
+                example.or(criteria1);
+                example.or(criteria2);
+                example.setOrderByClause("gmt_modified");
+                PageHelper.startPage(page , size);
+                List<GoodsInfo> goodsInfos = goodsInfoMapper.selectByExample(example);
+                return CustomResponse.success(goodsInfos);
+            }
+            return CustomResponse.queryFailed();
+        } catch (Exception e) {
+            return CustomResponse.queryFailed();
         }
     }
 }

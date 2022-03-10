@@ -7,6 +7,7 @@ import com.bolin.logistics.exception.CustomizeException;
 import com.bolin.logistics.mapper.WarehouseMapper;
 import com.bolin.logistics.model.*;
 import com.bolin.logistics.utils.CustomResponse;
+import com.github.pagehelper.PageHelper;
 import org.apache.ibatis.session.RowBounds;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -89,19 +90,19 @@ public class WarehouserService {
         }
     }
 
-//    public CustomResponse list(String token , int page , int size) {
-//        try {
-//            User checkedUser = userService.checkUser(token);
-//            if (checkedUser.getTypeId() != UserEnum.ADMIN.getType()) {
-//                throw new CustomizeException(CustomizeErrorCodeImpl.AUTHORIZE_FAIL);
-//            }
-//            int offset = size * (page - 1);
-//            WarehouseExample example = new WarehouseExample();
-//            example.setOrderByClause("gmt_modified desc");
-//            List<Warehouse> warehouses = warehouseMapper.selectByExampleWithRowbounds(example, new RowBounds(offset, size));
-//            return CustomResponse.success(warehouses);
-//        } catch (Exception e) {
-//            return CustomResponse.queryFailed();
-//        }
-//    }
+    public CustomResponse list( int page , int size , HttpServletRequest request) {
+        try {
+            User checkedUser = userService.checkUser(request);
+            if (checkedUser.getTypeId() != UserEnum.ADMIN.getType()) {
+                throw new CustomizeException(CustomizeErrorCodeImpl.AUTHORIZE_FAIL);
+            }
+            WarehouseExample example = new WarehouseExample();
+            example.setOrderByClause("gmt_modified");
+            PageHelper.startPage(page , size);
+            List<Warehouse> warehouses = warehouseMapper.selectByExample(example);
+            return CustomResponse.success(warehouses);
+        } catch (Exception e) {
+            return CustomResponse.queryFailed();
+        }
+    }
 }

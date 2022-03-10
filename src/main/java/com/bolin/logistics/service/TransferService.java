@@ -5,12 +5,13 @@ import com.bolin.logistics.enums.LogisticsStatusEnum;
 import com.bolin.logistics.enums.UserEnum;
 import com.bolin.logistics.exception.CustomizeErrorCodeImpl;
 import com.bolin.logistics.exception.CustomizeException;
-import com.bolin.logistics.mapper.GoodsInfoMapper;
+import com.bolin.logistics.mapper.CarMapper;
 import com.bolin.logistics.mapper.TransferInfoMapper;
 import com.bolin.logistics.mapper.WarehouseMapper;
 import com.bolin.logistics.model.*;
 import com.bolin.logistics.utils.CustomResponse;
 import com.bolin.logistics.utils.OrderNumGenUtil;
+import com.github.pagehelper.PageHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,6 +27,8 @@ public class TransferService {
     private UserService userService;
     @Autowired
     private WarehouseMapper warehouseMapper;
+    @Autowired
+    private CarMapper carMapper;
 
     @Transactional
     public CustomResponse addTransferInfo(HttpServletRequest request, TransferInfo transferInfo) {
@@ -200,6 +203,62 @@ public class TransferService {
         } catch (Exception e) {
             e.printStackTrace();
             return CustomResponse.deleteFailed();
+        }
+    }
+
+    public CustomResponse list(int page, int size, HttpServletRequest request) {
+        try {
+            User checkedUser = userService.checkUser(request);
+            if (checkedUser.getTypeId() == UserEnum.ADMIN.getType()) {
+                TransferInfoExample example = new TransferInfoExample();
+                example.setOrderByClause("gmt_modified");
+                PageHelper.startPage(page , size);
+                List<TransferInfo> transferInfos = transferInfoMapper.selectByExample(example);
+                return CustomResponse.success(transferInfos);
+            }
+            if (checkedUser.getTypeId() == UserEnum.OPERATOR.getType()) {
+                TransferInfoExample example = new TransferInfoExample();
+                example.createCriteria()
+                        .andOperateUserIdEqualTo(checkedUser.getId())
+                        .andStatusNotEqualTo(LogisticsStatusEnum.ARCHIVE.getType())
+                        .andStatusNotEqualTo(LogisticsStatusEnum.IN_TRANSIT.getType());
+                example.setOrderByClause("gmt_modified");
+                PageHelper.startPage(page , size);
+                List<TransferInfo> transferInfos = transferInfoMapper.selectByExample(example);
+                return CustomResponse.success(transferInfos);
+            }
+            if (checkedUser.getTypeId() == UserEnum.DRIVER.getType()) {
+                CarExample carExample = new CarExample();
+                carExample.createCriteria()
+                        .andUserIdEqualTo(checkedUser.getId());
+                List<Car> cars = carMapper.selectByExample(carExample);
+
+                TransferInfoExample example = new TransferInfoExample();
+                example.createCriteria()
+                        .andCarIdEqualTo(cars.get(0).getId())
+                        .andStatusNotEqualTo(LogisticsStatusEnum.ARCHIVE.getType())
+                        .andStatusNotEqualTo(LogisticsStatusEnum.IN_WAREHOUSE.getType());
+                example.setOrderByClause("gmt_modified");
+                PageHelper.startPage(page , size);
+                List<TransferInfo> transferInfos = transferInfoMapper.selectByExample(example);
+                return CustomResponse.success(transferInfos);
+            }
+            if (checkedUser.getTypeId() == UserEnum.CUSTOMER.getType()) {
+                TransferInfoExample example = new TransferInfoExample();
+                TransferInfoExample.Criteria criteria1 = example.createCriteria();
+                TransferInfoExample.Criteria criteria2 = example.createCriteria();
+                criteria1.andSendGoodsUserIdEqualTo(checkedUser.getId());
+                criteria2.andReceiveUserIdEqualTo(checkedUser.getId());
+                example.or(criteria1);
+                example.or(criteria2);
+                example.setOrderByClause("gmt_modified");
+                PageHelper.startPage(page , size);
+                List<TransferInfo> transferInfos = transferInfoMapper.selectByExample(example);
+                return CustomResponse.success(transferInfos);
+            }
+            return CustomResponse.queryFailed();
+        } catch (Exception e) {
+            return CustomResponse.queryFailed();
         }
     }
 }

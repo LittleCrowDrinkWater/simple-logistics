@@ -4,15 +4,15 @@ import com.bolin.logistics.enums.UserEnum;
 import com.bolin.logistics.exception.CustomizeErrorCodeImpl;
 import com.bolin.logistics.exception.CustomizeException;
 import com.bolin.logistics.mapper.LocationMapper;
-import com.bolin.logistics.model.Location;
-import com.bolin.logistics.model.LocationExample;
-import com.bolin.logistics.model.User;
+import com.bolin.logistics.model.*;
 import com.bolin.logistics.utils.CustomResponse;
+import com.github.pagehelper.PageHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 @Service
 public class LocationService {
@@ -86,6 +86,23 @@ public class LocationService {
                 return CustomResponse.deleteFailed();
         }catch (Exception e) {
             return CustomResponse.deleteFailed();
+        }
+    }
+
+    public CustomResponse list(int page, int size, HttpServletRequest request) {
+        try {
+            User checkedUser = userService.checkUser(request);
+            if (checkedUser.getTypeId() != UserEnum.ADMIN.getType()) {
+                throw new CustomizeException(CustomizeErrorCodeImpl.AUTHORIZE_FAIL);
+            }
+            LocationExample example = new LocationExample();
+            example.createCriteria();
+            example.setOrderByClause("gmt_modified");
+            PageHelper.startPage(page, size);
+            List<Location> locations = locationMapper.selectByExample(example);
+            return CustomResponse.success(locations);
+        } catch (Exception e) {
+            return CustomResponse.queryFailed();
         }
     }
 

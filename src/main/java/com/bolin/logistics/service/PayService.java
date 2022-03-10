@@ -7,13 +7,16 @@ import com.bolin.logistics.mapper.PayMapper;
 import com.bolin.logistics.model.Pay;
 import com.bolin.logistics.model.PayExample;
 import com.bolin.logistics.model.User;
+import com.bolin.logistics.model.UserExample;
 import com.bolin.logistics.utils.CustomResponse;
 import com.bolin.logistics.utils.OrderNumGenUtil;
+import com.github.pagehelper.PageHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 @Service
 public class PayService {
@@ -89,6 +92,23 @@ public class PayService {
         }catch (Exception e) {
             e.printStackTrace();
             return CustomResponse.deleteFailed();
+        }
+    }
+
+    public CustomResponse list(int page, int size, HttpServletRequest request) {
+        try {
+            User checkedUser = userService.checkUser(request);
+            if (checkedUser.getTypeId() != UserEnum.ADMIN.getType()) {
+                throw new CustomizeException(CustomizeErrorCodeImpl.AUTHORIZE_FAIL);
+            }
+            PayExample example = new PayExample();
+            example.createCriteria();
+            example.setOrderByClause("gmt_modified");
+            PageHelper.startPage(page, size);
+            List<Pay> pays = payMapper.selectByExample(example);
+            return CustomResponse.success(pays);
+        } catch (Exception e) {
+            return CustomResponse.queryFailed();
         }
     }
 }

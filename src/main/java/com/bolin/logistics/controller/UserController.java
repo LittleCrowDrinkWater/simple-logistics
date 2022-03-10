@@ -99,7 +99,17 @@ public class UserController {
             @ApiResponse(code = 4000, message = "请求失败")
     })
     @GetMapping("/list")
-    public CustomResponse list(@RequestParam int page, @RequestParam int size ,HttpServletRequest request) {
-        return userService.list(page, size , request);
+    public CustomResponse list(@RequestParam int page, @RequestParam int size, HttpServletRequest request) {
+        return userService.list(page, size, request);
+    }
+
+    @ApiOperation(value = "按照类型查询用户", notes = "按照类型查询用户")
+    @ApiResponses({
+            @ApiResponse(code = 2000, message = "请求成功"),
+            @ApiResponse(code = 4000, message = "请求失败")
+    })
+    @GetMapping("/listByType")
+    public CustomResponse listByType(@RequestParam int page, @RequestParam int size, @RequestParam int type, HttpServletRequest request) {
+        return userService.list(type , page, size, request);
     }
 }

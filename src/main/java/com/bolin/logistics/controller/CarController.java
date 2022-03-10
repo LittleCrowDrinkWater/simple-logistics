@@ -54,4 +54,14 @@ public class CarController {
         return carService.deleteCar(request, id);
     }
 
+    @ApiOperation(value = "查询所有车辆，仅管理员可用", notes = "查询所有车辆，仅管理员可用")
+    @ApiResponses({
+            @ApiResponse(code = 2000, message = "请求成功"),
+            @ApiResponse(code = 4000, message = "请求失败")
+    })
+    @GetMapping("/list")
+    public CustomResponse listByType(@RequestParam int page, @RequestParam int size, HttpServletRequest request) {
+        return carService.list(page, size, request);
+    }
+
 }

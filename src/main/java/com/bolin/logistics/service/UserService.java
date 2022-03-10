@@ -31,8 +31,8 @@ public class UserService {
     public User checkUser(HttpServletRequest request) {
         String token = "";
         Cookie[] cookies = request.getCookies();
-        for(Cookie cookie : cookies){
-            if ("token".equals(cookie.getName())){
+        for (Cookie cookie : cookies) {
+            if ("token".equals(cookie.getName())) {
                 token = cookie.getValue();
             }
         }
@@ -56,7 +56,7 @@ public class UserService {
     }
 
     @Transactional
-    public CustomResponse addUser(User user , HttpServletRequest request) {
+    public CustomResponse addUser(User user, HttpServletRequest request) {
         try {
             User checkedUser = checkUser(request);
             if (checkedUser.getTypeId() != UserEnum.ADMIN.getType()) {
@@ -79,7 +79,7 @@ public class UserService {
     }
 
     @Transactional
-    public CustomResponse updateUserByAdmin(User user,HttpServletRequest request) {
+    public CustomResponse updateUserByAdmin(User user, HttpServletRequest request) {
         try {
             User checkedUser = checkUser(request);
             if (checkedUser.getTypeId() != UserEnum.ADMIN.getType()) {
@@ -104,7 +104,7 @@ public class UserService {
     }
 
     @Transactional
-    public CustomResponse updateUserByUser(User user,HttpServletRequest request) {
+    public CustomResponse updateUserByUser(User user, HttpServletRequest request) {
         try {
             User checkedUser = checkUser(request);
             long id = checkedUser.getId();
@@ -127,7 +127,7 @@ public class UserService {
     }
 
     @Transactional
-    public CustomResponse deleteUser(long userid,HttpServletRequest request) {
+    public CustomResponse deleteUser(long userid, HttpServletRequest request) {
         try {
             User checkedUser = checkUser(request);
             if (checkedUser.getTypeId() != UserEnum.ADMIN.getType()) {
@@ -148,7 +148,7 @@ public class UserService {
         }
     }
 
-    public CustomResponse selectUserById(long userid,HttpServletRequest request) {
+    public CustomResponse selectUserById(long userid, HttpServletRequest request) {
         try {
             User checkedUser = checkUser(request);
             if (checkedUser.getTypeId() != UserEnum.ADMIN.getType()) {
@@ -203,7 +203,7 @@ public class UserService {
         }
     }
 
-    public CustomResponse logout(HttpServletRequest request , HttpServletResponse response) {
+    public CustomResponse logout(HttpServletRequest request, HttpServletResponse response) {
         try {
             request.getSession().removeAttribute("token");
             Cookie cookie = new Cookie("token", "");
@@ -230,15 +230,33 @@ public class UserService {
         }
     }
 
-    public CustomResponse list(int page , int size, HttpServletRequest request) {
+    public CustomResponse list(int page, int size, HttpServletRequest request) {
         try {
             User checkedUser = checkUser(request);
             if (checkedUser.getTypeId() != UserEnum.ADMIN.getType()) {
                 throw new CustomizeException(CustomizeErrorCodeImpl.AUTHORIZE_FAIL);
             }
             UserExample example = new UserExample();
-            example.setOrderByClause("gmt_modified desc");
-            PageHelper.startPage(page , size);
+            example.setOrderByClause("gmt_modified");
+            PageHelper.startPage(page, size);
+            List<User> users = userMapper.selectByExample(example);
+            return CustomResponse.success(users);
+        } catch (Exception e) {
+            return CustomResponse.queryFailed();
+        }
+    }
+
+    public CustomResponse list(int type, int page, int size, HttpServletRequest request) {
+        try {
+            User checkedUser = checkUser(request);
+            if (checkedUser.getTypeId() != UserEnum.ADMIN.getType()) {
+                throw new CustomizeException(CustomizeErrorCodeImpl.AUTHORIZE_FAIL);
+            }
+            UserExample example = new UserExample();
+            example.createCriteria()
+                    .andTypeIdEqualTo(type);
+            example.setOrderByClause("gmt_modified");
+            PageHelper.startPage(page, size);
             List<User> users = userMapper.selectByExample(example);
             return CustomResponse.success(users);
         } catch (Exception e) {

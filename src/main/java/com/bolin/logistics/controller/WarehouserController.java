@@ -9,9 +9,7 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
 import javax.servlet.http.HttpServletRequest;
-import java.util.Map;
 
 @Api(tags = "仓库地址关联相关控制器")
 @RestController
@@ -46,11 +44,18 @@ public class WarehouserController {
             @ApiResponse(code = 2003, message = "删除成功"),
             @ApiResponse(code = 4003, message = "删除失败")
     })
-    @PostMapping("/deleteWarehouse")
-    public CustomResponse deleteWarehouse( @RequestBody Map map , HttpServletRequest request) {
-        String temp = String.valueOf(map.get("id"));
-        int id = Integer.parseInt(temp);
+    @PostMapping("/deleteWarehouse/{id}")
+    public CustomResponse deleteWarehouse(@PathVariable("id") int id, HttpServletRequest request) {
         return warehouserService.deleteLocation(request, id);
     }
 
+    @ApiOperation(value = "查询仓库关联", notes = "传入page以及size")
+    @ApiResponses({
+            @ApiResponse(code = 2000, message = "请求成功"),
+            @ApiResponse(code = 4000, message = "请求失败")
+    })
+    @PostMapping("/list")
+    public CustomResponse list(@RequestParam int page, @RequestParam int size, HttpServletRequest request) {
+        return warehouserService.list(page, size, request);
+    }
 }

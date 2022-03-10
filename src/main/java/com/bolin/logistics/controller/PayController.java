@@ -52,4 +52,14 @@ public class PayController {
         long id = Long.parseLong(temp);
         return payService.deletePay(request, id);
     }
+
+    @ApiOperation(value = "查询所有支付单，仅管理员可用", notes = "查询所有支付单，仅管理员可用")
+    @ApiResponses({
+            @ApiResponse(code = 2000, message = "请求成功"),
+            @ApiResponse(code = 4000, message = "请求失败")
+    })
+    @GetMapping("/list")
+    public CustomResponse listByType(@RequestParam int page, @RequestParam int size, HttpServletRequest request) {
+        return payService.list(page, size, request);
+    }
 }
