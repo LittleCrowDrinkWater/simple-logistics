@@ -5,18 +5,18 @@ import lombok.Data;
 
 @Data
 public class CustomResponse<T> {
-    private int errorCode;       //错误码
+    private int statusCode;       //错误码
     private String errorMessage;    //呈现给用户的错误信息
     private T data;            //业务数据
 
     public CustomResponse(ResponseEnum responseEnum, T data) {
-        this.errorCode = responseEnum.getCode();
+        this.statusCode = responseEnum.getCode();
         this.errorMessage = responseEnum.getDescribe();
         this.data = data;
     }
 
-    public CustomResponse(int errorCode, String errorMessage) {
-        this.errorCode = errorCode;
+    public CustomResponse(int statusCode, String errorMessage) {
+        this.statusCode = statusCode;
         this.errorMessage = errorMessage;
     }
 
