@@ -91,7 +91,7 @@ public class TransferController {
             @ApiResponse(code = 4000, message = "请求失败")
     })
     @GetMapping("/list")
-    public CustomResponse listByType(@RequestParam int page, @RequestParam int size , HttpServletRequest request) {
+    public CustomResponse list(@RequestParam int page, @RequestParam int size , HttpServletRequest request) {
         return transferService.list( page, size, request);
     }
 }

@@ -60,7 +60,7 @@ public class CarController {
             @ApiResponse(code = 4000, message = "请求失败")
     })
     @GetMapping("/list")
-    public CustomResponse listByType(@RequestParam int page, @RequestParam int size, HttpServletRequest request) {
+    public CustomResponse list(@RequestParam int page, @RequestParam int size, HttpServletRequest request) {
         return carService.list(page, size, request);
     }
 
