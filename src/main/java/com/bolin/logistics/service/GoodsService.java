@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @Service
@@ -35,9 +36,9 @@ public class GoodsService {
     private TransferInfoMapper transferInfoMapper;
 
     @Transactional
-    public CustomResponse addGoodsInfo(String token, GoodsInfo goodsInfo) {
+    public CustomResponse addGoodsInfo(HttpServletRequest request, GoodsInfo goodsInfo) {
         try {
-            User checkedUser = userService.checkUser(token);
+            User checkedUser = userService.checkUser(request);
             if (checkedUser.getTypeId() != UserEnum.OPERATOR.getType() || checkedUser.getTypeId() == UserEnum.ADMIN.getType()) {
                 throw new CustomizeException(CustomizeErrorCodeImpl.AUTHORIZE_FAIL);
             }
@@ -62,10 +63,10 @@ public class GoodsService {
     }
 
     @Transactional
-    public CustomResponse deliver(String id , String token) {
+    public CustomResponse deliver(String id , HttpServletRequest request) {
         try {
             long  goodsBillId = Long.parseLong(id);
-            User checkedUser = userService.checkUser(token);
+            User checkedUser = userService.checkUser(request);
             if (checkedUser.getTypeId() != UserEnum.OPERATOR.getType() && checkedUser.getTypeId() != UserEnum.ADMIN.getType()) {
                 throw new CustomizeException(CustomizeErrorCodeImpl.AUTHORIZE_FAIL);
             }
@@ -93,12 +94,12 @@ public class GoodsService {
         }
     }
     @Transactional
-    public CustomResponse driverAccept(String id ,String token) {
+    public CustomResponse driverAccept(String id ,HttpServletRequest request) {
         try {
             long  goodsBillId = Long.parseLong(id);
             GoodsInfo info = goodsInfoMapper.selectByPrimaryKey(goodsBillId);
             Car car = carMapper.selectByPrimaryKey(info.getCarId());
-            User checkedUser = userService.checkUser(token);
+            User checkedUser = userService.checkUser(request);
             if (!(checkedUser.getTypeId() == UserEnum.DRIVER.getType())) {
                 throw new CustomizeException(CustomizeErrorCodeImpl.AUTHORIZE_FAIL);
             }
@@ -125,9 +126,9 @@ public class GoodsService {
     }
 
     @Transactional
-    public CustomResponse driverArrive(String id ,String token) {
+    public CustomResponse driverArrive(String id ,HttpServletRequest request) {
         try {
-            User checkedUser = userService.checkUser(token);
+            User checkedUser = userService.checkUser(request);
             if (!(checkedUser.getTypeId() == UserEnum.DRIVER.getType())) {
                 throw new CustomizeException(CustomizeErrorCodeImpl.AUTHORIZE_FAIL);
             }
@@ -165,9 +166,9 @@ public class GoodsService {
     }
 
     @Transactional
-    public CustomResponse storage(String id ,String token) {
+    public CustomResponse storage(String id ,HttpServletRequest request) {
         try {
-            User checkedUser = userService.checkUser(token);
+            User checkedUser = userService.checkUser(request);
             if (checkedUser.getTypeId() == UserEnum.CUSTOMER.getType()) {
                 throw new CustomizeException(CustomizeErrorCodeImpl.AUTHORIZE_FAIL);
             }
@@ -197,9 +198,9 @@ public class GoodsService {
     }
 
     @Transactional
-    public CustomResponse receive(String id ,String token) {
+    public CustomResponse receive(String id ,HttpServletRequest request) {
         try {
-            User checkedUser = userService.checkUser(token);
+            User checkedUser = userService.checkUser(request);
             if (checkedUser.getTypeId() == UserEnum.CUSTOMER.getType()) {
                 throw new CustomizeException(CustomizeErrorCodeImpl.AUTHORIZE_FAIL);
             }
@@ -232,9 +233,9 @@ public class GoodsService {
     }
 
     @Transactional
-    public CustomResponse deleteGoodsInfo(String token, long goodsInfoId) {
+    public CustomResponse deleteGoodsInfo(HttpServletRequest request, long goodsInfoId) {
         try {
-            User checkedUser = userService.checkUser(token);
+            User checkedUser = userService.checkUser(request);
             if (checkedUser.getTypeId() == UserEnum.DRIVER.getType()) {
                 throw new CustomizeException(CustomizeErrorCodeImpl.AUTHORIZE_FAIL);
             }

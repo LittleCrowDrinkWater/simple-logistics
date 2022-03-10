@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @Service
@@ -27,9 +28,9 @@ public class TransferService {
     private WarehouseMapper warehouseMapper;
 
     @Transactional
-    public CustomResponse addTransferInfo(String token, TransferInfo transferInfo) {
+    public CustomResponse addTransferInfo(HttpServletRequest request, TransferInfo transferInfo) {
         try {
-            User checkedUser = userService.checkUser(token);
+            User checkedUser = userService.checkUser(request);
             if (checkedUser.getTypeId() == UserEnum.OPERATOR.getType() || checkedUser.getTypeId() == UserEnum.ADMIN.getType()) {
                 throw new CustomizeException(CustomizeErrorCodeImpl.AUTHORIZE_FAIL);
             }
@@ -52,10 +53,10 @@ public class TransferService {
     }
 
     @Transactional
-    public CustomResponse deliver(String id, String token) {
+    public CustomResponse deliver(String id, HttpServletRequest request) {
         try {
             long transferBillId = Long.parseLong(id);
-            User checkedUser = userService.checkUser(token);
+            User checkedUser = userService.checkUser(request);
             if (checkedUser.getTypeId() != UserEnum.OPERATOR.getType() || checkedUser.getTypeId() != UserEnum.ADMIN.getType()) {
                 throw new CustomizeException(CustomizeErrorCodeImpl.AUTHORIZE_FAIL);
             }
@@ -85,10 +86,10 @@ public class TransferService {
     }
 
     @Transactional
-    public CustomResponse driverAccept(String id, String token) {
+    public CustomResponse driverAccept(String id, HttpServletRequest request) {
         try {
             long transferBillId = Long.parseLong(id);
-            User checkedUser = userService.checkUser(token);
+            User checkedUser = userService.checkUser(request);
             if (!(checkedUser.getTypeId() == UserEnum.DRIVER.getType())) {
                 throw new CustomizeException(CustomizeErrorCodeImpl.AUTHORIZE_FAIL);
             }
@@ -116,10 +117,10 @@ public class TransferService {
     }
 
     @Transactional
-    public CustomResponse driverArrive(String id, String token) {
+    public CustomResponse driverArrive(String id, HttpServletRequest request) {
         try {
             long transferBillId = Long.parseLong(id);
-            User checkedUser = userService.checkUser(token);
+            User checkedUser = userService.checkUser(request);
             if (!(checkedUser.getTypeId() == UserEnum.DRIVER.getType())) {
                 throw new CustomizeException(CustomizeErrorCodeImpl.AUTHORIZE_FAIL);
             }
@@ -149,10 +150,10 @@ public class TransferService {
     }
 
     @Transactional
-    public CustomResponse storage(String id, String token) {
+    public CustomResponse storage(String id, HttpServletRequest request) {
         try {
             long transferBillId = Long.parseLong(id);
-            User checkedUser = userService.checkUser(token);
+            User checkedUser = userService.checkUser(request);
             if (checkedUser.getTypeId() == UserEnum.CUSTOMER.getType()) {
                 throw new CustomizeException(CustomizeErrorCodeImpl.AUTHORIZE_FAIL);
             }
@@ -180,9 +181,9 @@ public class TransferService {
     }
 
     @Transactional
-    public CustomResponse deleteTransferInfo(String token, long transferInfoId) {
+    public CustomResponse deleteTransferInfo(HttpServletRequest request, long transferInfoId) {
         try {
-            User checkedUser = userService.checkUser(token);
+            User checkedUser = userService.checkUser(request);
             if (checkedUser.getTypeId() == UserEnum.DRIVER.getType()) {
                 throw new CustomizeException(CustomizeErrorCodeImpl.AUTHORIZE_FAIL);
             }

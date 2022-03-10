@@ -9,6 +9,8 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
 @Api(tags = "支付单据控制器")
@@ -25,8 +27,8 @@ public class PayController {
             @ApiResponse(code = 4001, message = "新增失败")
     })
     @PostMapping("/addPay")
-    public CustomResponse addPay(@RequestBody Pay pay, @CookieValue("token") String token) {
-        return payService.addPay(token, pay);
+    public CustomResponse addPay(@RequestBody Pay pay, HttpServletRequest request) {
+        return payService.addPay(request, pay);
     }
 
     @ApiOperation(value = "修改支付单", notes = "修改支付单,传入id和需要修改的字段,无需修改的字段传空即可", produces = "application/json")
@@ -35,8 +37,8 @@ public class PayController {
             @ApiResponse(code = 4002, message = "更新失败")
     })
     @PostMapping("/updatePay")
-    public CustomResponse updatePay(@RequestBody Pay pay, @CookieValue("token") String token) {
-        return payService.updatePay(token, pay);
+    public CustomResponse updatePay(@RequestBody Pay pay, HttpServletRequest request) {
+        return payService.updatePay(request, pay);
     }
 
     @ApiOperation(value = "删除支付单", notes = "删除支付单时,传入\"id\":id，后端封装在map里读取", produces = "application/json")
@@ -45,9 +47,9 @@ public class PayController {
             @ApiResponse(code = 4003, message = "删除失败")
     })
     @PostMapping("/deletePay")
-    public CustomResponse deletePay(@CookieValue("token") String token, @RequestBody Map map) {
+    public CustomResponse deletePay(HttpServletRequest request, @RequestBody Map map) {
         String temp = String.valueOf(map.get("id"));
         long id = Long.parseLong(temp);
-        return payService.deletePay(token, id);
+        return payService.deletePay(request, id);
     }
 }

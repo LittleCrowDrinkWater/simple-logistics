@@ -9,6 +9,8 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
 @Api(tags = "仓库地址关联相关控制器")
@@ -25,8 +27,8 @@ public class WarehouserController {
             @ApiResponse(code = 4001, message = "新增失败")
     })
     @PostMapping("/addWarehouse")
-    public CustomResponse addWarehouse(@RequestBody Warehouse warehouse, @CookieValue("token") String token) {
-        return warehouserService.addWarehouse(token, warehouse);
+    public CustomResponse addWarehouse(@RequestBody Warehouse warehouse, HttpServletRequest request) {
+        return warehouserService.addWarehouse(request, warehouse);
     }
 
     @ApiOperation(value = "修改仓库关联", notes = "修改仓库关联时传入id和需要修改的字段，无需修改的字段传空即可", produces = "application/json")
@@ -35,8 +37,8 @@ public class WarehouserController {
             @ApiResponse(code = 4002, message = "修改失败")
     })
     @PostMapping("/updateWarehouse")
-    public CustomResponse updateWarehouse(@RequestBody Warehouse warehouse, @CookieValue("token") String token) {
-        return warehouserService.updateLocation(token, warehouse);
+    public CustomResponse updateWarehouse(@RequestBody Warehouse warehouse, HttpServletRequest request) {
+        return warehouserService.updateLocation(request, warehouse);
     }
 
     @ApiOperation(value = "删除仓库关联", notes = "删除仓库关联时，传入\"id\":id，后端封装在map里读取", produces = "application/json")
@@ -45,10 +47,10 @@ public class WarehouserController {
             @ApiResponse(code = 4003, message = "删除失败")
     })
     @PostMapping("/deleteWarehouse")
-    public CustomResponse deleteWarehouse(@CookieValue("token") String token , @RequestBody Map map) {
+    public CustomResponse deleteWarehouse( @RequestBody Map map , HttpServletRequest request) {
         String temp = String.valueOf(map.get("id"));
         int id = Integer.parseInt(temp);
-        return warehouserService.deleteLocation(token, id);
+        return warehouserService.deleteLocation(request, id);
     }
 
 }

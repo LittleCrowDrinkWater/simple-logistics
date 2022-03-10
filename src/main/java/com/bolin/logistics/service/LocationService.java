@@ -12,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpServletRequest;
+
 @Service
 public class LocationService {
 
@@ -21,9 +23,9 @@ public class LocationService {
     private UserService userService;
 
     @Transactional
-    public CustomResponse addLocation(String token, Location location) {
+    public CustomResponse addLocation(HttpServletRequest request, Location location) {
         try {
-            User checkedUser = userService.checkUser(token);
+            User checkedUser = userService.checkUser(request);
             if (checkedUser.getTypeId() != UserEnum.ADMIN.getType()) {
                 throw new CustomizeException(CustomizeErrorCodeImpl.AUTHORIZE_FAIL);
             }
@@ -43,9 +45,9 @@ public class LocationService {
     }
 
     @Transactional
-    public CustomResponse updateLocation(String token, Location location) {
+    public CustomResponse updateLocation(HttpServletRequest request, Location location) {
         try {
-            User checkedUser = userService.checkUser(token);
+            User checkedUser = userService.checkUser(request);
             if (checkedUser.getTypeId() != UserEnum.ADMIN.getType()) {
                 throw new CustomizeException(CustomizeErrorCodeImpl.AUTHORIZE_FAIL);
             }
@@ -66,9 +68,9 @@ public class LocationService {
     }
 
     @Transactional
-    public CustomResponse deleteLocation(String token, int locationId) {
+    public CustomResponse deleteLocation(HttpServletRequest request, int locationId) {
         try {
-            User checkedUser = userService.checkUser(token);
+            User checkedUser = userService.checkUser(request);
             if (checkedUser.getTypeId() != UserEnum.ADMIN.getType()) {
                 throw new CustomizeException(CustomizeErrorCodeImpl.AUTHORIZE_FAIL);
             }

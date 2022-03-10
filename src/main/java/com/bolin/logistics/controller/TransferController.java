@@ -10,6 +10,7 @@ import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
 
@@ -27,8 +28,8 @@ public class TransferController {
             @ApiResponse(code = 4001, message = "新增失败")
     })
     @PostMapping("/addTransfer")
-    public CustomResponse addGoods(@RequestBody TransferInfo transferInfo, @CookieValue("token") String token) {
-        return transferService.addTransferInfo(token, transferInfo);
+    public CustomResponse addGoods(@RequestBody TransferInfo transferInfo, HttpServletRequest request) {
+        return transferService.addTransferInfo(request, transferInfo);
     }
 
     @ApiOperation(value = "出库", notes = "修改中转运单,传入id和需要修改的字段,无需修改的字段传空即可", produces = "application/json")
@@ -37,8 +38,8 @@ public class TransferController {
             @ApiResponse(code = 4002, message = "更新失败")
     })
     @PostMapping("/deliver/{id}")
-    public CustomResponse updateGoods(@PathVariable("id") String id, @CookieValue("token") String token) {
-        return transferService.deliver(id, token);
+    public CustomResponse updateGoods(@PathVariable("id") String id, HttpServletRequest request) {
+        return transferService.deliver(id, request);
     }
 
     @ApiOperation(value = "司机接货", notes = "修改中转运单,传入id和需要修改的字段,无需修改的字段传空即可", produces = "application/json")
@@ -47,8 +48,8 @@ public class TransferController {
             @ApiResponse(code = 4002, message = "更新失败")
     })
     @PostMapping("/driverAccept/{id}")
-    public CustomResponse driverAccept(@PathVariable("id") String id, @CookieValue("token") String token) {
-        return transferService.driverAccept(id, token);
+    public CustomResponse driverAccept(@PathVariable("id") String id, HttpServletRequest request) {
+        return transferService.driverAccept(id, request);
     }
 
     @ApiOperation(value = "司机抵达", notes = "修改中转运单,传入id和需要修改的字段,无需修改的字段传空即可", produces = "application/json")
@@ -57,8 +58,8 @@ public class TransferController {
             @ApiResponse(code = 4002, message = "更新失败")
     })
     @PostMapping("/driverArrive/{id}")
-    public CustomResponse driverArrive(@PathVariable("id") String id, @CookieValue("token") String token) {
-        return transferService.driverArrive(id, token);
+    public CustomResponse driverArrive(@PathVariable("id") String id, HttpServletRequest request) {
+        return transferService.driverArrive(id, request);
     }
 
     @ApiOperation(value = "入库", notes = "修改中转运单,传入id和需要修改的字段,无需修改的字段传空即可", produces = "application/json")
@@ -67,8 +68,8 @@ public class TransferController {
             @ApiResponse(code = 4002, message = "更新失败")
     })
     @PostMapping("/storage/{id}")
-    public CustomResponse storage(@PathVariable("id") String id, @CookieValue("token") String token) {
-        return transferService.storage(id, token);
+    public CustomResponse storage(@PathVariable("id") String id, HttpServletRequest request) {
+        return transferService.storage(id, request);
     }
 
     @ApiOperation(value = "删除中转运单", notes = "删除中转运单时,传入\"id\":id，后端封装在map里读取", produces = "application/json")
@@ -77,9 +78,9 @@ public class TransferController {
             @ApiResponse(code = 4003, message = "删除失败")
     })
     @PostMapping("/deleteTransfer")
-    public CustomResponse deleteGoods(@CookieValue("token") String token, @RequestBody Map map) {
+    public CustomResponse deleteGoods(HttpServletRequest request, @RequestBody Map map) {
         String temp = String.valueOf(map.get("id"));
         long id = Long.parseLong(temp);
-        return transferService.deleteTransferInfo(token, id);
+        return transferService.deleteTransferInfo(request, id);
     }
 }

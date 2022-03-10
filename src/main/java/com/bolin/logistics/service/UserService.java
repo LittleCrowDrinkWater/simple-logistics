@@ -27,7 +27,14 @@ public class UserService {
     @Autowired
     private UserMapper userMapper;
 
-    public User checkUser(String token) {
+    public User checkUser(HttpServletRequest request) {
+        String token = "";
+        Cookie[] cookies = request.getCookies();
+        for(Cookie cookie : cookies){
+            if ("token".equals(cookie.getName())){
+                token = cookie.getValue();
+            }
+        }
         if (token == null || "".equals(token)) {
             throw new CustomizeException(CustomizeErrorCodeImpl.NO_LOGIN);
         }
@@ -48,9 +55,9 @@ public class UserService {
     }
 
     @Transactional
-    public CustomResponse addUser(String token, User user) {
+    public CustomResponse addUser(User user , HttpServletRequest request) {
         try {
-            User checkedUser = checkUser(token);
+            User checkedUser = checkUser(request);
             if (checkedUser.getTypeId() != UserEnum.ADMIN.getType()) {
                 throw new CustomizeException(CustomizeErrorCodeImpl.AUTHORIZE_FAIL);
             }
@@ -71,9 +78,9 @@ public class UserService {
     }
 
     @Transactional
-    public CustomResponse updateUserByAdmin(String token, User user) {
+    public CustomResponse updateUserByAdmin(User user,HttpServletRequest request) {
         try {
-            User checkedUser = checkUser(token);
+            User checkedUser = checkUser(request);
             if (checkedUser.getTypeId() != UserEnum.ADMIN.getType()) {
                 throw new CustomizeException(CustomizeErrorCodeImpl.AUTHORIZE_FAIL);
             }
@@ -96,9 +103,9 @@ public class UserService {
     }
 
     @Transactional
-    public CustomResponse updateUserByUser(String token, User user) {
+    public CustomResponse updateUserByUser(User user,HttpServletRequest request) {
         try {
-            User checkedUser = checkUser(token);
+            User checkedUser = checkUser(request);
             long id = checkedUser.getId();
             if (!StringUtils.isEmpty(user.getPassword()))
                 user.setPassword(MD5Utils.stringToMD5(user.getPassword()));
@@ -119,9 +126,9 @@ public class UserService {
     }
 
     @Transactional
-    public CustomResponse deleteUser(String token, long userid) {
+    public CustomResponse deleteUser(long userid,HttpServletRequest request) {
         try {
-            User checkedUser = checkUser(token);
+            User checkedUser = checkUser(request);
             if (checkedUser.getTypeId() != UserEnum.ADMIN.getType()) {
                 throw new CustomizeException(CustomizeErrorCodeImpl.AUTHORIZE_FAIL);
             }
@@ -140,9 +147,9 @@ public class UserService {
         }
     }
 
-    public CustomResponse selectUserById(String token, long userid) {
+    public CustomResponse selectUserById(long userid,HttpServletRequest request) {
         try {
-            User checkedUser = checkUser(token);
+            User checkedUser = checkUser(request);
             if (checkedUser.getTypeId() != UserEnum.ADMIN.getType()) {
                 throw new CustomizeException(CustomizeErrorCodeImpl.AUTHORIZE_FAIL);
             }

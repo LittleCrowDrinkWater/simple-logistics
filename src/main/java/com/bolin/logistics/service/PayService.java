@@ -13,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpServletRequest;
+
 @Service
 public class PayService {
     @Autowired
@@ -21,9 +23,9 @@ public class PayService {
     private UserService userService;
 
     @Transactional
-    public CustomResponse addPay(String token, Pay pay) {
+    public CustomResponse addPay(HttpServletRequest request, Pay pay) {
         try {
-            User checkedUser = userService.checkUser(token);
+            User checkedUser = userService.checkUser(request);
             if (checkedUser.getTypeId() != UserEnum.ADMIN.getType() || checkedUser.getTypeId() != UserEnum.OPERATOR.getType()) {
                 throw new CustomizeException(CustomizeErrorCodeImpl.AUTHORIZE_FAIL);
             }
@@ -44,9 +46,9 @@ public class PayService {
     }
 
     @Transactional
-    public CustomResponse updatePay(String token, Pay pay) {
+    public CustomResponse updatePay( HttpServletRequest request, Pay pay) {
         try {
-            User checkedUser = userService.checkUser(token);
+            User checkedUser = userService.checkUser(request);
             if (checkedUser.getTypeId() != UserEnum.ADMIN.getType() || checkedUser.getTypeId() != UserEnum.OPERATOR.getType()) {
                 throw new CustomizeException(CustomizeErrorCodeImpl.AUTHORIZE_FAIL);
             }
@@ -68,9 +70,9 @@ public class PayService {
     }
 
     @Transactional
-    public CustomResponse deletePay(String token, long payId) {
+    public CustomResponse deletePay(HttpServletRequest request, long payId) {
         try {
-            User checkedUser = userService.checkUser(token);
+            User checkedUser = userService.checkUser(request);
             if (checkedUser.getTypeId() != UserEnum.ADMIN.getType() || checkedUser.getTypeId() != UserEnum.OPERATOR.getType()) {
                 throw new CustomizeException(CustomizeErrorCodeImpl.AUTHORIZE_FAIL);
             }

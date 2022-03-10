@@ -14,6 +14,7 @@ import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
 
@@ -30,8 +31,8 @@ public class GoodsController {
             @ApiResponse(code = 4001, message = "新增失败")
     })
     @PostMapping("/addGoods")
-    public CustomResponse addGoods(@RequestBody GoodsInfo goodsInfo, @CookieValue("token") String token) {
-        return goodsService.addGoodsInfo(token, goodsInfo);
+    public CustomResponse addGoods(@RequestBody GoodsInfo goodsInfo, HttpServletRequest request) {
+        return goodsService.addGoodsInfo(request, goodsInfo);
     }
 
     @ApiOperation(value = "发货，仅操作员和管理员可用", notes = "发货,传入id和需要修改的字段,无需修改的字段传空即可", produces = "application/json")
@@ -40,8 +41,8 @@ public class GoodsController {
             @ApiResponse(code = 4002, message = "更新失败")
     })
     @GetMapping("/deliver/{id}")
-    public CustomResponse deliver( @PathVariable("id") String id, @CookieValue("token") String token) {
-        return goodsService.deliver(id, token);
+    public CustomResponse deliver( @PathVariable("id") String id, HttpServletRequest request) {
+        return goodsService.deliver(id, request);
     }
 
     @ApiOperation(value = "修改货物运单状态，仅司机接货", notes = "修改货物运单,传入GoodsInfo的id", produces = "application/json")
@@ -50,8 +51,8 @@ public class GoodsController {
             @ApiResponse(code = 4002, message = "更新失败")
     })
     @GetMapping("/driverAccept/{id}")
-    public CustomResponse driverAccept(@PathVariable("id") String id, @CookieValue("token") String token) {
-        return goodsService.driverAccept(id, token);
+    public CustomResponse driverAccept(@PathVariable("id") String id, HttpServletRequest request) {
+        return goodsService.driverAccept(id, request);
     }
 
     @ApiOperation(value = "修改货物运单状态，仅司机抵达", notes = "修改货物运单,传入GoodsInfo的id", produces = "application/json")
@@ -60,8 +61,8 @@ public class GoodsController {
             @ApiResponse(code = 4002, message = "更新失败")
     })
     @GetMapping("/driverArrive/{id}")
-    public CustomResponse driverArrive(@PathVariable("id") String id, @CookieValue("token") String token) {
-        return goodsService.driverArrive(id, token);
+    public CustomResponse driverArrive(@PathVariable("id") String id, HttpServletRequest request) {
+        return goodsService.driverArrive(id, request);
     }
 
     @ApiOperation(value = "入库", notes = "修改货物运单,传入GoodsInfo的id", produces = "application/json")
@@ -70,8 +71,8 @@ public class GoodsController {
             @ApiResponse(code = 4002, message = "更新失败")
     })
     @GetMapping("/storage/{id}")
-    public CustomResponse storage(@PathVariable("id") String id, @CookieValue("token") String token) {
-        return goodsService.storage(id, token);
+    public CustomResponse storage(@PathVariable("id") String id, HttpServletRequest request) {
+        return goodsService.storage(id, request);
     }
 
     @ApiOperation(value = "收货", notes = "修改货物运单,传入GoodsInfo的id", produces = "application/json")
@@ -80,8 +81,8 @@ public class GoodsController {
             @ApiResponse(code = 4002, message = "更新失败")
     })
     @GetMapping("/receive/{id}")
-    public CustomResponse receive(@PathVariable("id") String id, @CookieValue("token") String token) {
-        return goodsService.receive(id, token);
+    public CustomResponse receive(@PathVariable("id") String id, HttpServletRequest request) {
+        return goodsService.receive(id, request);
     }
 
 
@@ -91,7 +92,7 @@ public class GoodsController {
             @ApiResponse(code = 4003, message = "删除失败")
     })
     @PostMapping("/deleteGoods/{id}")
-    public CustomResponse deleteGoods(@PathVariable("id") String id , @CookieValue("token") String token) {
-        return goodsService.deleteGoodsInfo(token, Long.parseLong(id));
+    public CustomResponse deleteGoods(@PathVariable("id") String id , HttpServletRequest request) {
+        return goodsService.deleteGoodsInfo(request, Long.parseLong(id));
     }
 }

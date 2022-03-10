@@ -13,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpServletRequest;
+
 @Service
 public class CarService {
     @Autowired
@@ -21,9 +23,9 @@ public class CarService {
     private UserService userService;
 
     @Transactional
-    public CustomResponse addCar(String token, Car car) {
+    public CustomResponse addCar(HttpServletRequest request, Car car) {
         try {
-            User checkedUser = userService.checkUser(token);
+            User checkedUser = userService.checkUser(request);
             if (checkedUser.getTypeId() != UserEnum.ADMIN.getType() || checkedUser.getTypeId() != UserEnum.OPERATOR.getType()) {
                 throw new CustomizeException(CustomizeErrorCodeImpl.AUTHORIZE_FAIL);
             }
@@ -43,9 +45,9 @@ public class CarService {
     }
 
     @Transactional
-    public CustomResponse updateCar(String token, Car car) {
+    public CustomResponse updateCar(HttpServletRequest request, Car car) {
         try {
-            User checkedUser = userService.checkUser(token);
+            User checkedUser = userService.checkUser(request);
             if (checkedUser.getTypeId() != UserEnum.ADMIN.getType() || checkedUser.getTypeId() != UserEnum.OPERATOR.getType()) {
                 throw new CustomizeException(CustomizeErrorCodeImpl.AUTHORIZE_FAIL);
             }
@@ -67,9 +69,9 @@ public class CarService {
     }
 
     @Transactional
-    public CustomResponse deleteCar(String token, long carId) {
+    public CustomResponse deleteCar(HttpServletRequest request, long carId) {
         try {
-            User checkedUser = userService.checkUser(token);
+            User checkedUser = userService.checkUser(request);
             if (checkedUser.getTypeId() != UserEnum.ADMIN.getType() || checkedUser.getTypeId() != UserEnum.OPERATOR.getType()) {
                 throw new CustomizeException(CustomizeErrorCodeImpl.AUTHORIZE_FAIL);
             }

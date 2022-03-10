@@ -9,6 +9,8 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
 
@@ -26,8 +28,8 @@ public class CarController {
             @ApiResponse(code = 4001, message = "新增失败")
     })
     @PostMapping("/addCar")
-    public CustomResponse addCar(@RequestBody Car car, @CookieValue("token") String token) {
-        return carService.addCar(token, car);
+    public CustomResponse addCar(@RequestBody Car car, HttpServletRequest request) {
+        return carService.addCar(request, car);
     }
 
     @ApiOperation(value = "修改车辆", notes = "修改车辆,传入id和需要修改的字段,无需修改的字段传空即可", produces = "application/json")
@@ -36,8 +38,8 @@ public class CarController {
             @ApiResponse(code = 4002, message = "更新失败")
     })
     @PostMapping("/updateCar")
-    public CustomResponse updateCar(@RequestBody Car car, @CookieValue("token") String token) {
-        return carService.updateCar(token, car);
+    public CustomResponse updateCar(@RequestBody Car car, HttpServletRequest request) {
+        return carService.updateCar(request, car);
     }
 
     @ApiOperation(value = "删除车辆", notes = "删除车辆,传入\"id\":id，后端封装在map里读取", produces = "application/json")
@@ -46,10 +48,10 @@ public class CarController {
             @ApiResponse(code = 4003, message = "删除失败")
     })
     @PostMapping("/deleteCar")
-    public CustomResponse deleteCar(@CookieValue("token") String token , @RequestBody Map map) {
+    public CustomResponse deleteCar(HttpServletRequest request , @RequestBody Map map) {
         String temp = String.valueOf(map.get("id"));
         long id = Long.parseLong(temp);
-        return carService.deleteCar(token, id);
+        return carService.deleteCar(request, id);
     }
 
 }

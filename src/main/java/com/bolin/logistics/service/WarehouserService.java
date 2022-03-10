@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @Service
@@ -22,9 +23,9 @@ public class WarehouserService {
     private UserService userService;
 
     @Transactional
-    public CustomResponse addWarehouse(String token, Warehouse warehouse) {
+    public CustomResponse addWarehouse(HttpServletRequest request, Warehouse warehouse) {
         try {
-            User checkedUser = userService.checkUser(token);
+            User checkedUser = userService.checkUser(request);
             if (checkedUser.getTypeId() != UserEnum.ADMIN.getType()) {
                 throw new CustomizeException(CustomizeErrorCodeImpl.AUTHORIZE_FAIL);
             }
@@ -44,9 +45,9 @@ public class WarehouserService {
     }
 
     @Transactional
-    public CustomResponse updateLocation(String token, Warehouse warehouse) {
+    public CustomResponse updateLocation(HttpServletRequest request, Warehouse warehouse) {
         try {
-            User checkedUser = userService.checkUser(token);
+            User checkedUser = userService.checkUser(request);
             if (checkedUser.getTypeId() != UserEnum.ADMIN.getType()) {
                 throw new CustomizeException(CustomizeErrorCodeImpl.AUTHORIZE_FAIL);
             }
@@ -67,9 +68,9 @@ public class WarehouserService {
     }
 
     @Transactional
-    public CustomResponse deleteLocation(String token, int warehouseId) {
+    public CustomResponse deleteLocation(HttpServletRequest request, int warehouseId) {
         try {
-            User checkedUser = userService.checkUser(token);
+            User checkedUser = userService.checkUser(request);
             if (checkedUser.getTypeId() != UserEnum.ADMIN.getType()) {
                 throw new CustomizeException(CustomizeErrorCodeImpl.AUTHORIZE_FAIL);
             }
