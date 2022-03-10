@@ -8,11 +8,11 @@ public enum CustomizeErrorCodeImpl implements CustomizeErrorCode {
     EXIST_TRANSFER_ORDER(5005,"存在转运单")
     ;
 
-    CustomizeErrorCodeImpl(Integer code, String message) {
+    CustomizeErrorCodeImpl(int code, String message) {
         this.message = message;
         this.code = code;
     }
-    private Integer code;
+    private int code;
     private String message;
 
 
@@ -22,7 +22,7 @@ public enum CustomizeErrorCodeImpl implements CustomizeErrorCode {
     }
 
     @Override
-    public Integer getCode() {
+    public int getCode() {
         return code;
     }
 }

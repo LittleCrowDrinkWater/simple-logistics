@@ -71,8 +71,8 @@ public class UserController {
 
     @ApiOperation(value = "用户登录", notes = "用户登录时，tel、email或name其中之一和password，\"telOrEmailOrName\":telOrEmailOrName和\"password\":password", produces = "application/json")
     @ApiResponses({
-            @ApiResponse(code = 2000, message = "请求成功"),
-            @ApiResponse(code = 4000, message = "请求失败")
+            @ApiResponse(code = 2005, message = "登录成功"),
+            @ApiResponse(code = 4000, message = "登录失败")
     })
     @PostMapping("/login")
     public CustomResponse login(@RequestBody Map map , HttpServletResponse response) {

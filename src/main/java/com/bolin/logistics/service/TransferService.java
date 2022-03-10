@@ -40,6 +40,11 @@ public class TransferService {
             transferInfo.setGoodsBillCode(OrderNumGenUtil.genTransferInfoNo());
             transferInfoMapper.insert(transferInfo);
             return CustomResponse.addSuccess();
+        } catch (CustomizeException e) {
+            if (e.getCode() == CustomizeErrorCodeImpl.NO_LOGIN.getCode())
+                return CustomResponse.loginFailed();
+            else
+                return CustomResponse.updateFailed();
         } catch (Exception e) {
             e.printStackTrace();
             return CustomResponse.addFailed();
@@ -47,15 +52,15 @@ public class TransferService {
     }
 
     @Transactional
-    public CustomResponse deliver(String id , String token) {
+    public CustomResponse deliver(String id, String token) {
         try {
-            long  transferBillId = Long.parseLong(id);
+            long transferBillId = Long.parseLong(id);
             User checkedUser = userService.checkUser(token);
             if (checkedUser.getTypeId() != UserEnum.OPERATOR.getType() || checkedUser.getTypeId() != UserEnum.ADMIN.getType()) {
                 throw new CustomizeException(CustomizeErrorCodeImpl.AUTHORIZE_FAIL);
             }
             TransferInfo info = transferInfoMapper.selectByPrimaryKey(transferBillId);
-            if (!checkedUser.getId().equals(info.getOperateUserId())){
+            if (!checkedUser.getId().equals(info.getOperateUserId())) {
                 throw new CustomizeException(CustomizeErrorCodeImpl.AUTHORIZE_FAIL);
             }
             TransferInfo transferInfo = new TransferInfo();
@@ -68,6 +73,11 @@ public class TransferService {
                     .andIdEqualTo(transferBillId);
             transferInfoMapper.updateByExampleSelective(transferInfo, example);
             return CustomResponse.updateSuccess();
+        } catch (CustomizeException e) {
+            if (e.getCode() == CustomizeErrorCodeImpl.NO_LOGIN.getCode())
+                return CustomResponse.loginFailed();
+            else
+                return CustomResponse.updateFailed();
         } catch (Exception e) {
             e.printStackTrace();
             return CustomResponse.updateFailed();
@@ -75,15 +85,15 @@ public class TransferService {
     }
 
     @Transactional
-    public CustomResponse driverAccept(String id , String token) {
+    public CustomResponse driverAccept(String id, String token) {
         try {
-            long  transferBillId = Long.parseLong(id);
+            long transferBillId = Long.parseLong(id);
             User checkedUser = userService.checkUser(token);
             if (!(checkedUser.getTypeId() == UserEnum.DRIVER.getType())) {
                 throw new CustomizeException(CustomizeErrorCodeImpl.AUTHORIZE_FAIL);
             }
             TransferInfo info = transferInfoMapper.selectByPrimaryKey(transferBillId);
-            if (!checkedUser.getId().equals(info.getOperateUserId())){
+            if (!checkedUser.getId().equals(info.getOperateUserId())) {
                 throw new CustomizeException(CustomizeErrorCodeImpl.AUTHORIZE_FAIL);
             }
             TransferInfo transferInfo = new TransferInfo();
@@ -94,6 +104,11 @@ public class TransferService {
                     .andIdEqualTo(transferBillId);
             transferInfoMapper.updateByExampleSelective(transferInfo, example);
             return CustomResponse.updateSuccess();
+        } catch (CustomizeException e) {
+            if (e.getCode() == CustomizeErrorCodeImpl.NO_LOGIN.getCode())
+                return CustomResponse.loginFailed();
+            else
+                return CustomResponse.updateFailed();
         } catch (Exception e) {
             e.printStackTrace();
             return CustomResponse.updateFailed();
@@ -101,15 +116,15 @@ public class TransferService {
     }
 
     @Transactional
-    public CustomResponse driverArrive(String id , String token) {
+    public CustomResponse driverArrive(String id, String token) {
         try {
-            long  transferBillId = Long.parseLong(id);
+            long transferBillId = Long.parseLong(id);
             User checkedUser = userService.checkUser(token);
             if (!(checkedUser.getTypeId() == UserEnum.DRIVER.getType())) {
                 throw new CustomizeException(CustomizeErrorCodeImpl.AUTHORIZE_FAIL);
             }
             TransferInfo info = transferInfoMapper.selectByPrimaryKey(transferBillId);
-            if (!checkedUser.getId().equals(info.getOperateUserId())){
+            if (!checkedUser.getId().equals(info.getOperateUserId())) {
                 throw new CustomizeException(CustomizeErrorCodeImpl.AUTHORIZE_FAIL);
             }
             Warehouse receiveWarehouse = warehouseMapper.selectByPrimaryKey(info.getReceivingWarehouse());
@@ -122,6 +137,11 @@ public class TransferService {
                     .andIdEqualTo(transferBillId);
             transferInfoMapper.updateByExampleSelective(transferInfo, example);
             return CustomResponse.updateSuccess();
+        } catch (CustomizeException e) {
+            if (e.getCode() == CustomizeErrorCodeImpl.NO_LOGIN.getCode())
+                return CustomResponse.loginFailed();
+            else
+                return CustomResponse.updateFailed();
         } catch (Exception e) {
             e.printStackTrace();
             return CustomResponse.updateFailed();
@@ -129,15 +149,15 @@ public class TransferService {
     }
 
     @Transactional
-    public CustomResponse storage(String id , String token) {
+    public CustomResponse storage(String id, String token) {
         try {
-            long  transferBillId = Long.parseLong(id);
+            long transferBillId = Long.parseLong(id);
             User checkedUser = userService.checkUser(token);
             if (checkedUser.getTypeId() == UserEnum.CUSTOMER.getType()) {
                 throw new CustomizeException(CustomizeErrorCodeImpl.AUTHORIZE_FAIL);
             }
             TransferInfo info = transferInfoMapper.selectByPrimaryKey(transferBillId);
-            if (!checkedUser.getId().equals(info.getOperateUserId())){
+            if (!checkedUser.getId().equals(info.getOperateUserId())) {
                 throw new CustomizeException(CustomizeErrorCodeImpl.AUTHORIZE_FAIL);
             }
             TransferInfo transferInfo = new TransferInfo();
@@ -148,6 +168,11 @@ public class TransferService {
                     .andIdEqualTo(transferBillId);
             transferInfoMapper.updateByExampleSelective(transferInfo, example);
             return CustomResponse.updateSuccess();
+        } catch (CustomizeException e) {
+            if (e.getCode() == CustomizeErrorCodeImpl.NO_LOGIN.getCode())
+                return CustomResponse.loginFailed();
+            else
+                return CustomResponse.updateFailed();
         } catch (Exception e) {
             e.printStackTrace();
             return CustomResponse.updateFailed();
@@ -165,10 +190,15 @@ public class TransferService {
             example.createCriteria()
                     .andIdEqualTo(transferInfoId);
             transferInfoMapper.deleteByExample(example);
-            return CustomResponse.addSuccess();
+            return CustomResponse.deleteFailed();
+        } catch (CustomizeException e) {
+            if (e.getCode() == CustomizeErrorCodeImpl.NO_LOGIN.getCode())
+                return CustomResponse.loginFailed();
+            else
+                return CustomResponse.deleteFailed();
         } catch (Exception e) {
             e.printStackTrace();
-            return CustomResponse.addFailed();
+            return CustomResponse.deleteFailed();
         }
     }
 }

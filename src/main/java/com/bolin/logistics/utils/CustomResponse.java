@@ -20,15 +20,26 @@ public class CustomResponse<T> {
         this.errorMessage = errorMessage;
     }
 
+    public static CustomResponse loginFailed() {
+        return new CustomResponse(ResponseEnum.FAILED_LOGIN , null);
+    }
+
+    public static CustomResponse loginSuccess(Object object) {
+        return new CustomResponse(ResponseEnum.SUCCESS_LOGIN, object);
+    }
+
     public static CustomResponse success(Object object) {
         return new CustomResponse(ResponseEnum.SUCCESS, object);
     }
+
     public static CustomResponse success() {
         return new CustomResponse(ResponseEnum.SUCCESS, null);
     }
+
     public static CustomResponse fail() {
         return new CustomResponse(ResponseEnum.FAILED, null);
     }
+
     public static CustomResponse queryFailed() {
         return new CustomResponse(ResponseEnum.FAILED_QUERY, null);
     }
@@ -40,9 +51,11 @@ public class CustomResponse<T> {
     public static CustomResponse addFailed() {
         return new CustomResponse(ResponseEnum.FAILED_ADD, null);
     }
+
     public static CustomResponse updateSuccess() {
         return new CustomResponse(ResponseEnum.SUCCESS_UPDATE, null);
     }
+
     public static CustomResponse updateFailed() {
         return new CustomResponse(ResponseEnum.FAILED_UPDATE, null);
     }

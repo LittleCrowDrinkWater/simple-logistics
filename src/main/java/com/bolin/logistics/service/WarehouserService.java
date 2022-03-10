@@ -32,6 +32,11 @@ public class WarehouserService {
             warehouse.setGmtModified(System.currentTimeMillis());
             warehouseMapper.insert(warehouse);
             return CustomResponse.addSuccess();
+        } catch (CustomizeException e) {
+            if (e.getCode() == CustomizeErrorCodeImpl.NO_LOGIN.getCode())
+                return CustomResponse.loginFailed();
+            else
+                return CustomResponse.addFailed();
         } catch (Exception e) {
             e.printStackTrace();
             return CustomResponse.addFailed();
@@ -51,6 +56,11 @@ public class WarehouserService {
                     .andIdEqualTo(warehouse.getId());
             warehouseMapper.updateByExampleSelective(warehouse, example);
             return CustomResponse.updateSuccess();
+        } catch (CustomizeException e) {
+            if (e.getCode() == CustomizeErrorCodeImpl.NO_LOGIN.getCode())
+                return CustomResponse.loginFailed();
+            else
+                return CustomResponse.updateFailed();
         } catch (Exception e) {
             return CustomResponse.updateFailed();
         }
@@ -68,8 +78,13 @@ public class WarehouserService {
                     .andIdEqualTo(warehouseId);
             warehouseMapper.deleteByExample(example);
             return CustomResponse.updateSuccess();
+        } catch (CustomizeException e) {
+            if (e.getCode() == CustomizeErrorCodeImpl.NO_LOGIN.getCode())
+                return CustomResponse.loginFailed();
+            else
+                return CustomResponse.deleteFailed();
         } catch (Exception e) {
-            return CustomResponse.updateFailed();
+            return CustomResponse.deleteFailed();
         }
     }
 

@@ -28,6 +28,9 @@ public class UserService {
     private UserMapper userMapper;
 
     public User checkUser(String token) {
+        if (token == null || "".equals(token)) {
+            throw new CustomizeException(CustomizeErrorCodeImpl.NO_LOGIN);
+        }
         if (!JwtUtil.checkJwt(token)) {
             throw new CustomizeException(CustomizeErrorCodeImpl.NO_LOGIN);
         }
@@ -56,6 +59,11 @@ public class UserService {
             user.setPassword(MD5Utils.stringToMD5(user.getPassword()));
             userMapper.insert(user);
             return CustomResponse.addSuccess();
+        } catch (CustomizeException e) {
+            if (e.getCode() == CustomizeErrorCodeImpl.NO_LOGIN.getCode())
+                return CustomResponse.loginFailed();
+            else
+                return CustomResponse.addFailed();
         } catch (Exception e) {
             e.printStackTrace();
             return CustomResponse.addFailed();
@@ -77,6 +85,11 @@ public class UserService {
                     .andIdEqualTo(user.getId());
             userMapper.updateByExampleSelective(user, userExample);
             return CustomResponse.updateSuccess();
+        } catch (CustomizeException e) {
+            if (e.getCode() == CustomizeErrorCodeImpl.NO_LOGIN.getCode())
+                return CustomResponse.loginFailed();
+            else
+                return CustomResponse.updateFailed();
         } catch (Exception e) {
             return CustomResponse.updateFailed();
         }
@@ -95,6 +108,11 @@ public class UserService {
                     .andIdEqualTo(id);
             userMapper.updateByExampleSelective(user, userExample);
             return CustomResponse.updateSuccess();
+        } catch (CustomizeException e) {
+            if (e.getCode() == CustomizeErrorCodeImpl.NO_LOGIN.getCode())
+                return CustomResponse.loginFailed();
+            else
+                return CustomResponse.updateFailed();
         } catch (Exception e) {
             return CustomResponse.updateFailed();
         }
@@ -112,6 +130,11 @@ public class UserService {
                     .andIdEqualTo(userid);
             userMapper.deleteByExample(userExample);
             return CustomResponse.deleteSuccess();
+        } catch (CustomizeException e) {
+            if (e.getCode() == CustomizeErrorCodeImpl.NO_LOGIN.getCode())
+                return CustomResponse.loginFailed();
+            else
+                return CustomResponse.deleteFailed();
         } catch (Exception e) {
             return CustomResponse.deleteFailed();
         }
@@ -128,6 +151,11 @@ public class UserService {
                     .andIdEqualTo(userid);
             List<User> userList = userMapper.selectByExample(userExample);
             return CustomResponse.success(userList.get(0));
+        } catch (CustomizeException e) {
+            if (e.getCode() == CustomizeErrorCodeImpl.NO_LOGIN.getCode())
+                return CustomResponse.loginFailed();
+            else
+                return CustomResponse.queryFailed();
         } catch (Exception e) {
             return CustomResponse.queryFailed();
         }
@@ -150,7 +178,7 @@ public class UserService {
             example.or(criteria1);
             example.or(criteria2);
             List<User> users = userMapper.selectByExample(example);
-            if (users.size() == 0){
+            if (users.size() == 0) {
                 throw new CustomizeException(CustomizeErrorCodeImpl.USER_NOFOUND);
             }
             User user = users.get(0);
@@ -159,11 +187,11 @@ public class UserService {
             UserExample userExample = new UserExample();
             userExample.createCriteria()
                     .andIdEqualTo(user.getId());
-            userMapper.updateByExampleSelective(user , userExample);
+            userMapper.updateByExampleSelective(user, userExample);
             response.addCookie(new Cookie("token", token));
-            return CustomResponse.success(user);
+            return CustomResponse.loginSuccess(user);
         } catch (Exception e) {
-            return CustomResponse.queryFailed();
+            return CustomResponse.loginFailed();
         }
     }
 

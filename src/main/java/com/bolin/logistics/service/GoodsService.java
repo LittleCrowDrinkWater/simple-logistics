@@ -50,7 +50,12 @@ public class GoodsService {
             goodsInfo.setStatus(TransferStatusEnum.WAIT_OPERATION.getType());
             goodsInfoMapper.insert(goodsInfo);
             return CustomResponse.addSuccess();
-        } catch (Exception e) {
+        } catch (CustomizeException e) {
+            if (e.getCode() == CustomizeErrorCodeImpl.NO_LOGIN.getCode())
+                return CustomResponse.loginFailed();
+            else
+                return CustomResponse.addFailed();
+        }catch (Exception e) {
             e.printStackTrace();
             return CustomResponse.addFailed();
         }
@@ -77,7 +82,12 @@ public class GoodsService {
                     .andIdEqualTo(goodsBillId);
             goodsInfoMapper.updateByExampleSelective(goodsInfo, example);
             return CustomResponse.updateSuccess();
-        } catch (Exception e) {
+        } catch (CustomizeException e) {
+            if (e.getCode() == CustomizeErrorCodeImpl.NO_LOGIN.getCode())
+                return CustomResponse.loginFailed();
+            else
+                return CustomResponse.updateFailed();
+        }catch (Exception e) {
             e.printStackTrace();
             return CustomResponse.updateFailed();
         }
@@ -92,7 +102,7 @@ public class GoodsService {
             if (!(checkedUser.getTypeId() == UserEnum.DRIVER.getType())) {
                 throw new CustomizeException(CustomizeErrorCodeImpl.AUTHORIZE_FAIL);
             }
-            if (checkedUser.getId().equals(car.getUserId())){
+            if (!(checkedUser.getId().equals(car.getUserId()))){
                 throw new CustomizeException(CustomizeErrorCodeImpl.AUTHORIZE_FAIL);
             }
             GoodsInfo goodsInfo = new GoodsInfo();
@@ -103,7 +113,12 @@ public class GoodsService {
                     .andIdEqualTo(goodsBillId);
             goodsInfoMapper.updateByExampleSelective(goodsInfo, example);
             return CustomResponse.updateSuccess();
-        } catch (Exception e) {
+        } catch (CustomizeException e) {
+            if (e.getCode() == CustomizeErrorCodeImpl.NO_LOGIN.getCode())
+                return CustomResponse.loginFailed();
+            else
+                return CustomResponse.updateFailed();
+        }catch (Exception e) {
             e.printStackTrace();
             return CustomResponse.updateFailed();
         }
@@ -131,8 +146,19 @@ public class GoodsService {
             example.createCriteria()
                     .andIdEqualTo(goodsBillId);
             goodsInfoMapper.updateByExampleSelective(goodsInfo, example);
+
+            car.setWarehouseId(receiveWarehouse.getId());
+            CarExample carExample = new CarExample();
+            carExample.createCriteria()
+                    .andIdEqualTo(car.getId());
+            carMapper.updateByExampleSelective(car , carExample);
             return CustomResponse.updateSuccess();
-        } catch (Exception e) {
+        } catch (CustomizeException e) {
+            if (e.getCode() == CustomizeErrorCodeImpl.NO_LOGIN.getCode())
+                return CustomResponse.loginFailed();
+            else
+                return CustomResponse.updateFailed();
+        }catch (Exception e) {
             e.printStackTrace();
             return CustomResponse.updateFailed();
         }
@@ -159,7 +185,12 @@ public class GoodsService {
                     .andIdEqualTo(goodsBillId);
             goodsInfoMapper.updateByExampleSelective(goodsInfo, example);
             return CustomResponse.updateSuccess();
-        } catch (Exception e) {
+        } catch (CustomizeException e) {
+            if (e.getCode() == CustomizeErrorCodeImpl.NO_LOGIN.getCode())
+                return CustomResponse.loginFailed();
+            else
+                return CustomResponse.updateFailed();
+        }catch (Exception e) {
             e.printStackTrace();
             return CustomResponse.updateFailed();
         }
@@ -189,7 +220,12 @@ public class GoodsService {
                     .andIdEqualTo(goodsBillId);
             goodsInfoMapper.updateByExampleSelective(goodsInfo, example);
             return CustomResponse.updateSuccess();
-        } catch (Exception e) {
+        } catch (CustomizeException e) {
+            if (e.getCode() == CustomizeErrorCodeImpl.NO_LOGIN.getCode())
+                return CustomResponse.loginFailed();
+            else
+                return CustomResponse.updateFailed();
+        }catch (Exception e) {
             e.printStackTrace();
             return CustomResponse.updateFailed();
         }
@@ -207,9 +243,14 @@ public class GoodsService {
                     .andIdEqualTo(goodsInfoId);
             goodsInfoMapper.deleteByExample(example);
             return CustomResponse.addSuccess();
-        } catch (Exception e) {
+        } catch (CustomizeException e) {
+            if (e.getCode() == CustomizeErrorCodeImpl.NO_LOGIN.getCode())
+                return CustomResponse.loginFailed();
+            else
+                return CustomResponse.deleteFailed();
+        }catch (Exception e) {
             e.printStackTrace();
-            return CustomResponse.addFailed();
+            return CustomResponse.deleteFailed();
         }
     }
 }

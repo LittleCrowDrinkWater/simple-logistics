@@ -32,7 +32,12 @@ public class PayService {
             pay.setPaymentNo(OrderNumGenUtil.genPayNo());
             payMapper.insert(pay);
             return CustomResponse.addSuccess();
-        } catch (Exception e) {
+        } catch (CustomizeException e) {
+            if (e.getCode() == CustomizeErrorCodeImpl.NO_LOGIN.getCode())
+                return CustomResponse.loginFailed();
+            else
+                return CustomResponse.addFailed();
+        }catch (Exception e) {
             e.printStackTrace();
             return CustomResponse.addFailed();
         }
@@ -51,9 +56,14 @@ public class PayService {
                     .andIdEqualTo(pay.getId());
             payMapper.updateByExampleSelective(pay , example);
             return CustomResponse.addSuccess();
-        } catch (Exception e) {
+        } catch (CustomizeException e) {
+            if (e.getCode() == CustomizeErrorCodeImpl.NO_LOGIN.getCode())
+                return CustomResponse.loginFailed();
+            else
+                return CustomResponse.updateFailed();
+        }catch (Exception e) {
             e.printStackTrace();
-            return CustomResponse.addFailed();
+            return CustomResponse.updateFailed();
         }
     }
 
@@ -69,9 +79,14 @@ public class PayService {
                     .andIdEqualTo(payId);
             payMapper.deleteByExample(example);
             return CustomResponse.addSuccess();
-        } catch (Exception e) {
+        } catch (CustomizeException e) {
+            if (e.getCode() == CustomizeErrorCodeImpl.NO_LOGIN.getCode())
+                return CustomResponse.loginFailed();
+            else
+                return CustomResponse.deleteFailed();
+        }catch (Exception e) {
             e.printStackTrace();
-            return CustomResponse.addFailed();
+            return CustomResponse.deleteFailed();
         }
     }
 }

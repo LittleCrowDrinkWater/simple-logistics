@@ -31,7 +31,12 @@ public class LocationService {
             location.setGmtModified(System.currentTimeMillis());
             locationMapper.insert(location);
             return CustomResponse.addSuccess();
-        } catch (Exception e) {
+        } catch (CustomizeException e) {
+            if (e.getCode() == CustomizeErrorCodeImpl.NO_LOGIN.getCode())
+                return CustomResponse.loginFailed();
+            else
+                return CustomResponse.addFailed();
+        }catch (Exception e) {
             e.printStackTrace();
             return CustomResponse.addFailed();
         }
@@ -50,7 +55,12 @@ public class LocationService {
                     .andIdEqualTo(location.getId());
             locationMapper.updateByExampleSelective(location, example);
             return CustomResponse.updateSuccess();
-        } catch (Exception e) {
+        } catch (CustomizeException e) {
+            if (e.getCode() == CustomizeErrorCodeImpl.NO_LOGIN.getCode())
+                return CustomResponse.loginFailed();
+            else
+                return CustomResponse.updateFailed();
+        }catch (Exception e) {
             return CustomResponse.updateFailed();
         }
     }
@@ -67,8 +77,13 @@ public class LocationService {
                     .andIdEqualTo(locationId);
             locationMapper.deleteByExample(locationExample);
             return CustomResponse.updateSuccess();
-        } catch (Exception e) {
-            return CustomResponse.updateFailed();
+        } catch (CustomizeException e) {
+            if (e.getCode() == CustomizeErrorCodeImpl.NO_LOGIN.getCode())
+                return CustomResponse.loginFailed();
+            else
+                return CustomResponse.deleteFailed();
+        }catch (Exception e) {
+            return CustomResponse.deleteFailed();
         }
     }
 

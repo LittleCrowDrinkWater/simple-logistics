@@ -9,7 +9,9 @@ public enum ResponseEnum {
     FAILED_UPDATE(4002,"更新失败!"),
     SUCCESS_DELETE(2003,"删除成功!"),
     FAILED_DELETE(4003,"删除失败!"),
-    FAILED_QUERY(4004,"暂无数据!")
+    FAILED_QUERY(4004,"暂无数据!"),
+    SUCCESS_LOGIN(2005,"登陆成功!"),
+    FAILED_LOGIN(4005,"登录失败!")
     ;
 
     private int code;
