@@ -35,7 +35,7 @@ public class GoodsService {
     private TransferInfoMapper transferInfoMapper;
 
     @Transactional
-    public CustomResponse addGoodsInfo(String token, GoodsInfo goodsInfo, Pay pay) {
+    public CustomResponse addGoodsInfo(String token, GoodsInfo goodsInfo) {
         try {
             User checkedUser = userService.checkUser(token);
             if (checkedUser.getTypeId() != UserEnum.OPERATOR.getType() || checkedUser.getTypeId() == UserEnum.ADMIN.getType()) {
@@ -49,15 +49,6 @@ public class GoodsService {
             goodsInfo.setStatus(LogisticsStatusEnum.WAIT_OPERATION.getType());
             goodsInfo.setStatus(TransferStatusEnum.WAIT_OPERATION.getType());
             goodsInfoMapper.insert(goodsInfo);
-
-            GoodsInfoExample example = new GoodsInfoExample();
-            example.createCriteria()
-                    .andGoodsBillCodeEqualTo(goodsInfo.getGoodsBillCode());
-            List<GoodsInfo> goodsInfos = goodsInfoMapper.selectByExample(example);
-            pay.setPaymentNo(OrderNumGenUtil.genPayNo());
-            pay.setGoodsInfoId(goodsInfos.get(0).getId());
-            payService.addPay(token,pay);
-
             return CustomResponse.addSuccess();
         } catch (Exception e) {
             e.printStackTrace();
@@ -70,7 +61,7 @@ public class GoodsService {
         try {
             long  goodsBillId = Long.parseLong(id);
             User checkedUser = userService.checkUser(token);
-            if (checkedUser.getTypeId() != UserEnum.OPERATOR.getType() || checkedUser.getTypeId() != UserEnum.ADMIN.getType()) {
+            if (checkedUser.getTypeId() != UserEnum.OPERATOR.getType() && checkedUser.getTypeId() != UserEnum.ADMIN.getType()) {
                 throw new CustomizeException(CustomizeErrorCodeImpl.AUTHORIZE_FAIL);
             }
             GoodsInfo info = goodsInfoMapper.selectByPrimaryKey(goodsBillId);

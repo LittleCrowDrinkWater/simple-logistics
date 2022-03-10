@@ -8,6 +8,7 @@ import com.bolin.logistics.model.Pay;
 import com.bolin.logistics.model.PayExample;
 import com.bolin.logistics.model.User;
 import com.bolin.logistics.utils.CustomResponse;
+import com.bolin.logistics.utils.OrderNumGenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,6 +29,7 @@ public class PayService {
             }
             pay.setGmtCreate(System.currentTimeMillis());
             pay.setGmtModified(System.currentTimeMillis());
+            pay.setPaymentNo(OrderNumGenUtil.genPayNo());
             payMapper.insert(pay);
             return CustomResponse.addSuccess();
         } catch (Exception e) {
