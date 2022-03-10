@@ -10,6 +10,7 @@ import com.bolin.logistics.model.UserExample;
 import com.bolin.logistics.utils.CustomResponse;
 import com.bolin.logistics.utils.JwtUtil;
 import com.bolin.logistics.utils.MD5Utils;
+import com.github.pagehelper.PageHelper;
 import org.apache.ibatis.session.RowBounds;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -202,7 +203,7 @@ public class UserService {
         }
     }
 
-    public CustomResponse logout(HttpServletRequest request, HttpServletResponse response) {
+    public CustomResponse logout(HttpServletRequest request , HttpServletResponse response) {
         try {
             request.getSession().removeAttribute("token");
             Cookie cookie = new Cookie("token", "");
@@ -229,19 +230,19 @@ public class UserService {
         }
     }
 
-//    public CustomResponse list(String token , int page , int size) {
-//        try {
-//            User checkedUser = checkUser(token);
-//            if (checkedUser.getTypeId() != UserEnum.ADMIN.getType()) {
-//                throw new CustomizeException(CustomizeErrorCodeImpl.AUTHORIZE_FAIL);
-//            }
-//            int offset = size * (page - 1);
-//            UserExample example = new UserExample();
-//            example.setOrderByClause("gmt_modified desc");
-//            List<User> users = userMapper.selectByExampleWithRowbounds(example, new RowBounds(offset, size));
-//            return CustomResponse.success(users);
-//        } catch (Exception e) {
-//            return CustomResponse.queryFailed();
-//        }
-//    }
+    public CustomResponse list(int page , int size, HttpServletRequest request) {
+        try {
+            User checkedUser = checkUser(request);
+            if (checkedUser.getTypeId() != UserEnum.ADMIN.getType()) {
+                throw new CustomizeException(CustomizeErrorCodeImpl.AUTHORIZE_FAIL);
+            }
+            UserExample example = new UserExample();
+            example.setOrderByClause("gmt_modified desc");
+            PageHelper.startPage(page , size);
+            List<User> users = userMapper.selectByExample(example);
+            return CustomResponse.success(users);
+        } catch (Exception e) {
+            return CustomResponse.queryFailed();
+        }
+    }
 }
