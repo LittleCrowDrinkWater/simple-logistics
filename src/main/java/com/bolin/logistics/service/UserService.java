@@ -263,4 +263,8 @@ public class UserService {
             return CustomResponse.queryFailed();
         }
     }
+
+    public CustomResponse getUserByToken(HttpServletRequest request) {
+        return CustomResponse.success(checkUser(request));
+    }
 }
