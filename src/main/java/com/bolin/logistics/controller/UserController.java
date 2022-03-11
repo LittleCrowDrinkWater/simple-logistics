@@ -111,7 +111,7 @@ public class UserController {
         return userService.list(type, page, size, request);
     }
 
-    @ApiOperation(value = "按照类型查询用户", notes = "按照类型查询用户")
+    @ApiOperation(value = "根据cookie查询", notes = "根据cookie查询当前用户，直接请求该接口，token正确返回相应数据")
     @ApiResponses({
             @ApiResponse(code = 2000, message = "请求成功"),
             @ApiResponse(code = 4000, message = "请求失败")
