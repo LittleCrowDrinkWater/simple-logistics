@@ -6,18 +6,18 @@ import lombok.Data;
 @Data
 public class CustomResponse<T> {
     private int statusCode;       //错误码
-    private String errorMessage;    //呈现给用户的错误信息
+    private String message;    //呈现给用户的错误信息
     private T data;            //业务数据
 
     public CustomResponse(ResponseEnum responseEnum, T data) {
         this.statusCode = responseEnum.getCode();
-        this.errorMessage = responseEnum.getDescribe();
+        this.message = responseEnum.getDescribe();
         this.data = data;
     }
 
     public CustomResponse(int statusCode, String errorMessage) {
         this.statusCode = statusCode;
-        this.errorMessage = errorMessage;
+        this.message = errorMessage;
     }
 
     public static CustomResponse loginFailed() {

@@ -59,5 +59,9 @@ public class CarController {
     public CustomResponse list(@RequestParam int page, @RequestParam int size, HttpServletRequest request) {
         return carService.list(page, size, request);
     }
+    @GetMapping("/listByWarehouse")
+    public CustomResponse list(@RequestParam int warehouseId,@RequestParam int page, @RequestParam int size, HttpServletRequest request) {
+        return carService.list(warehouseId,page, size, request);
+    }
 
 }

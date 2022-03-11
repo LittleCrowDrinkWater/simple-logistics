@@ -197,7 +197,7 @@ public class UserService {
                     .andIdEqualTo(user.getId());
             userMapper.updateByExampleSelective(user, userExample);
             response.addCookie(new Cookie("token", token));
-            return CustomResponse.loginSuccess(user);
+            return CustomResponse.loginSuccess(token);
         } catch (Exception e) {
             return CustomResponse.loginFailed();
         }

@@ -107,4 +107,22 @@ public class CarService {
             return CustomResponse.queryFailed();
         }
     }
+
+    public CustomResponse list(int warehouseId , int page, int size, HttpServletRequest request) {
+        try {
+            User checkedUser = userService.checkUser(request);
+            if (checkedUser.getTypeId() != UserEnum.ADMIN.getType()) {
+                throw new CustomizeException(CustomizeErrorCodeImpl.AUTHORIZE_FAIL);
+            }
+            CarExample example = new CarExample();
+            example.createCriteria()
+                    .andWarehouseIdEqualTo(warehouseId);
+            example.setOrderByClause("gmt_modified");
+            PageHelper.startPage(page, size);
+            List<Car> cars = carMapper.selectByExample(example);
+            return CustomResponse.success(cars);
+        } catch (Exception e) {
+            return CustomResponse.queryFailed();
+        }
+    }
 }
