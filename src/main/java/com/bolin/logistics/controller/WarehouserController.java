@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 
 @Api(tags = "仓库地址关联相关控制器")
 @RestController
-@RequestMapping(("/Warehouse"))
+@RequestMapping(("/warehouse"))
 public class WarehouserController {
 
     @Autowired
