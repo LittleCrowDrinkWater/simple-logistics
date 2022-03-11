@@ -10,9 +10,7 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
 import javax.servlet.http.HttpServletRequest;
-import java.util.Map;
 
 @Api(tags = "仓库地址相关控制器")
 @RestController
@@ -42,15 +40,13 @@ public class LocationController {
         return locationService.updateLocation(request, location);
     }
 
-    @ApiOperation(value = "删除仓库地址", notes = "删除仓库地址,传入\"id\":id，后端封装在map里读取", produces = "application/json")
+    @ApiOperation(value = "删除仓库地址", notes = "删除仓库地址,Get请求添加参数id", produces = "application/json")
     @ApiResponses({
             @ApiResponse(code = 2003, message = "删除成功"),
             @ApiResponse(code = 4003, message = "删除失败")
     })
-    @PostMapping("/deleteLocation")
-    public CustomResponse deleteLocation(HttpServletRequest request , @RequestBody Map map) {
-        String temp = String.valueOf(map.get("id"));
-        int id = Integer.parseInt(temp);
+    @GetMapping("/deleteLocation/{id}")
+    public CustomResponse deleteLocation(HttpServletRequest request , @PathVariable("id") int id) {
         return locationService.deleteLocation(request, id);
     }
 

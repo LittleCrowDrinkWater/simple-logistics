@@ -9,9 +9,7 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
 import javax.servlet.http.HttpServletRequest;
-import java.util.Map;
 
 @Api(tags = "支付单据控制器")
 @RestController
@@ -41,15 +39,13 @@ public class PayController {
         return payService.updatePay(request, pay);
     }
 
-    @ApiOperation(value = "删除支付单", notes = "删除支付单时,传入\"id\":id，后端封装在map里读取", produces = "application/json")
+    @ApiOperation(value = "删除支付单", notes = "删除支付单时,Get请求添加参数id", produces = "application/json")
     @ApiResponses({
             @ApiResponse(code = 2003, message = "删除成功"),
             @ApiResponse(code = 4003, message = "删除失败")
     })
-    @PostMapping("/deletePay")
-    public CustomResponse deletePay(HttpServletRequest request, @RequestBody Map map) {
-        String temp = String.valueOf(map.get("id"));
-        long id = Long.parseLong(temp);
+    @GetMapping("/deletePay/{id}")
+    public CustomResponse deletePay(HttpServletRequest request, @PathVariable("id") long id) {
         return payService.deletePay(request, id);
     }
 

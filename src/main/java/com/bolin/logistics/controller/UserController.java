@@ -58,15 +58,13 @@ public class UserController {
         return userService.updateUserByUser(user, request);
     }
 
-    @ApiOperation(value = "删除用户", notes = "删除用户时，传入\"userId\":userId，后端封装在map里读取", produces = "application/json")
+    @ApiOperation(value = "删除用户", notes = "删除用户,在Get请求中添加参数id", produces = "application/json")
     @ApiResponses({
             @ApiResponse(code = 2003, message = "删除成功"),
             @ApiResponse(code = 4003, message = "删除失败")
     })
-    @PostMapping("/deleteUser")
-    public CustomResponse deleteUser(@RequestBody Map map, HttpServletRequest request) {
-        String temp = String.valueOf(map.get("userId"));
-        long userId = Long.parseLong(temp);
+    @GetMapping("/deleteUser/{id}")
+    public CustomResponse deleteUser(@PathVariable("id") long userId, HttpServletRequest request) {
         return userService.deleteUser(userId, request);
     }
 

@@ -9,9 +9,7 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
 import javax.servlet.http.HttpServletRequest;
-import java.util.Map;
 
 
 @Api(tags = "中转单据控制器")
@@ -72,15 +70,13 @@ public class TransferController {
         return transferService.storage(id, request);
     }
 
-    @ApiOperation(value = "删除中转运单", notes = "删除中转运单时,传入\"id\":id，后端封装在map里读取", produces = "application/json")
+    @ApiOperation(value = "删除中转运单", notes = "删除中转运单时,Get请求添加参数id", produces = "application/json")
     @ApiResponses({
             @ApiResponse(code = 2003, message = "删除成功"),
             @ApiResponse(code = 4003, message = "删除失败")
     })
-    @PostMapping("/deleteTransfer")
-    public CustomResponse deleteGoods(HttpServletRequest request, @RequestBody Map map) {
-        String temp = String.valueOf(map.get("id"));
-        long id = Long.parseLong(temp);
+    @GetMapping("/deleteTransfer/{id}")
+    public CustomResponse deleteGoods(HttpServletRequest request, @PathVariable("id") int id) {
         return transferService.deleteTransferInfo(request, id);
     }
 

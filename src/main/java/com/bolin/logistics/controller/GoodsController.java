@@ -1,10 +1,6 @@
 package com.bolin.logistics.controller;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
 import com.bolin.logistics.model.GoodsInfo;
-import com.bolin.logistics.model.Pay;
 import com.bolin.logistics.service.GoodsService;
 import com.bolin.logistics.utils.CustomResponse;
 import io.swagger.annotations.Api;
@@ -13,10 +9,7 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
 import javax.servlet.http.HttpServletRequest;
-import java.util.Map;
-
 
 @Api(tags = "货物单据控制器")
 @RestController
@@ -86,12 +79,12 @@ public class GoodsController {
     }
 
 
-    @ApiOperation(value = "删除货物运单", notes = "删除货物运单,传入\"id\":id，后端封装在map里读取", produces = "application/json")
+    @ApiOperation(value = "删除货物运单", notes = "删除货物运单,Get请求添加参数id", produces = "application/json")
     @ApiResponses({
             @ApiResponse(code = 2003, message = "删除成功"),
             @ApiResponse(code = 4003, message = "删除失败")
     })
-    @PostMapping("/deleteGoods/{id}")
+    @GetMapping("/deleteGoods/{id}")
     public CustomResponse deleteGoods(@PathVariable("id") String id , HttpServletRequest request) {
         return goodsService.deleteGoodsInfo(request, Long.parseLong(id));
     }

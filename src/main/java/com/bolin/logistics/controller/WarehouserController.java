@@ -39,12 +39,12 @@ public class WarehouserController {
         return warehouserService.updateLocation(request, warehouse);
     }
 
-    @ApiOperation(value = "删除仓库关联", notes = "删除仓库关联时，传入\"id\":id，后端封装在map里读取", produces = "application/json")
+    @ApiOperation(value = "删除仓库关联", notes = "删除仓库关联时，Get请求添加参数id", produces = "application/json")
     @ApiResponses({
             @ApiResponse(code = 2003, message = "删除成功"),
             @ApiResponse(code = 4003, message = "删除失败")
     })
-    @PostMapping("/deleteWarehouse/{id}")
+    @GetMapping("/deleteWarehouse/{id}")
     public CustomResponse deleteWarehouse(@PathVariable("id") int id, HttpServletRequest request) {
         return warehouserService.deleteLocation(request, id);
     }

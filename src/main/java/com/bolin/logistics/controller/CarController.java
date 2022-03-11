@@ -9,9 +9,7 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
 import javax.servlet.http.HttpServletRequest;
-import java.util.Map;
 
 
 
@@ -42,15 +40,13 @@ public class CarController {
         return carService.updateCar(request, car);
     }
 
-    @ApiOperation(value = "删除车辆", notes = "删除车辆,传入\"id\":id，后端封装在map里读取", produces = "application/json")
+    @ApiOperation(value = "删除车辆", notes = "删除车辆", produces = "application/json")
     @ApiResponses({
             @ApiResponse(code = 2003, message = "删除成功"),
             @ApiResponse(code = 4003, message = "删除失败")
     })
-    @PostMapping("/deleteCar")
-    public CustomResponse deleteCar(HttpServletRequest request , @RequestBody Map map) {
-        String temp = String.valueOf(map.get("id"));
-        long id = Long.parseLong(temp);
+    @GetMapping("/deleteCar/{id}")
+    public CustomResponse deleteCar(HttpServletRequest request , @PathVariable("id") long id) {
         return carService.deleteCar(request, id);
     }
 
