@@ -34,7 +34,7 @@ public class TransferService {
     public CustomResponse addTransferInfo(HttpServletRequest request, TransferInfo transferInfo) {
         try {
             User checkedUser = userService.checkUser(request);
-            if (checkedUser.getTypeId() == UserEnum.OPERATOR.getType() || checkedUser.getTypeId() == UserEnum.ADMIN.getType()) {
+            if (checkedUser.getTypeId() == UserEnum.OPERATOR.getType() && checkedUser.getTypeId() == UserEnum.ADMIN.getType()) {
                 throw new CustomizeException(CustomizeErrorCodeImpl.AUTHORIZE_FAIL);
             }
             Warehouse warehouse = warehouseMapper.selectByPrimaryKey(transferInfo.getDeliveryWarehouse());
@@ -60,7 +60,7 @@ public class TransferService {
         try {
             long transferBillId = Long.parseLong(id);
             User checkedUser = userService.checkUser(request);
-            if (checkedUser.getTypeId() != UserEnum.OPERATOR.getType() || checkedUser.getTypeId() != UserEnum.ADMIN.getType()) {
+            if (checkedUser.getTypeId() != UserEnum.OPERATOR.getType() && checkedUser.getTypeId() != UserEnum.ADMIN.getType()) {
                 throw new CustomizeException(CustomizeErrorCodeImpl.AUTHORIZE_FAIL);
             }
             TransferInfo info = transferInfoMapper.selectByPrimaryKey(transferBillId);

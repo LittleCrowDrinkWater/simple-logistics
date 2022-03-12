@@ -29,7 +29,7 @@ public class PayService {
     public CustomResponse addPay(HttpServletRequest request, Pay pay) {
         try {
             User checkedUser = userService.checkUser(request);
-            if (checkedUser.getTypeId() != UserEnum.ADMIN.getType() || checkedUser.getTypeId() != UserEnum.OPERATOR.getType()) {
+            if (checkedUser.getTypeId() != UserEnum.ADMIN.getType() && checkedUser.getTypeId() != UserEnum.OPERATOR.getType()) {
                 throw new CustomizeException(CustomizeErrorCodeImpl.AUTHORIZE_FAIL);
             }
             pay.setGmtCreate(System.currentTimeMillis());
@@ -52,7 +52,7 @@ public class PayService {
     public CustomResponse updatePay( HttpServletRequest request, Pay pay) {
         try {
             User checkedUser = userService.checkUser(request);
-            if (checkedUser.getTypeId() != UserEnum.ADMIN.getType() || checkedUser.getTypeId() != UserEnum.OPERATOR.getType()) {
+            if (checkedUser.getTypeId() != UserEnum.ADMIN.getType() && checkedUser.getTypeId() != UserEnum.OPERATOR.getType()) {
                 throw new CustomizeException(CustomizeErrorCodeImpl.AUTHORIZE_FAIL);
             }
             pay.setGmtModified(System.currentTimeMillis());
@@ -76,7 +76,7 @@ public class PayService {
     public CustomResponse deletePay(HttpServletRequest request, long payId) {
         try {
             User checkedUser = userService.checkUser(request);
-            if (checkedUser.getTypeId() != UserEnum.ADMIN.getType() || checkedUser.getTypeId() != UserEnum.OPERATOR.getType()) {
+            if (checkedUser.getTypeId() != UserEnum.ADMIN.getType() && checkedUser.getTypeId() != UserEnum.OPERATOR.getType()) {
                 throw new CustomizeException(CustomizeErrorCodeImpl.AUTHORIZE_FAIL);
             }
             PayExample example = new PayExample();
