@@ -54,7 +54,7 @@ public class WarehouserController {
             @ApiResponse(code = 2000, message = "请求成功"),
             @ApiResponse(code = 4000, message = "请求失败")
     })
-    @PostMapping("/list")
+    @GetMapping("/list")
     public CustomResponse list(@RequestParam int page, @RequestParam int size, HttpServletRequest request) {
         return warehouserService.list(page, size, request);
     }

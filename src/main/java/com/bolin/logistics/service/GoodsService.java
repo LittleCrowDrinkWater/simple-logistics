@@ -30,8 +30,6 @@ public class GoodsService {
     @Autowired
     private WarehouseMapper warehouseMapper;
     @Autowired
-    private PayService payService;
-    @Autowired
     private CarMapper carMapper;
     @Autowired
     private TransferInfoMapper transferInfoMapper;
@@ -49,7 +47,6 @@ public class GoodsService {
             goodsInfo.setOperateUserId(warehouse.getDirectorUserId());
             goodsInfo.setGoodsBillCode(OrderNumGenUtil.genGoodsInfoNo());
             goodsInfo.setStatus(LogisticsStatusEnum.WAIT_OPERATION.getType());
-            goodsInfo.setStatus(TransferStatusEnum.WAIT_OPERATION.getType());
             goodsInfoMapper.insert(goodsInfo);
             return CustomResponse.addSuccess();
         } catch (CustomizeException e) {
