@@ -56,11 +56,11 @@ public class CarController {
             @ApiResponse(code = 4000, message = "请求失败")
     })
     @GetMapping("/list")
-    public CustomResponse list(@RequestParam int page, @RequestParam int size, HttpServletRequest request) {
+    public CustomResponse<Car> list(@RequestParam int page, @RequestParam int size, HttpServletRequest request) {
         return carService.list(page, size, request);
     }
     @GetMapping("/listByWarehouse")
-    public CustomResponse list(@RequestParam int warehouseId,@RequestParam int page, @RequestParam int size, HttpServletRequest request) {
+    public CustomResponse<Car> list(@RequestParam int warehouseId,@RequestParam int page, @RequestParam int size, HttpServletRequest request) {
         return carService.list(warehouseId,page, size, request);
     }
 

@@ -1,5 +1,6 @@
 package com.bolin.logistics.controller;
 
+import com.bolin.logistics.model.User;
 import com.bolin.logistics.model.Warehouse;
 import com.bolin.logistics.service.WarehouserService;
 import com.bolin.logistics.utils.CustomResponse;
@@ -55,7 +56,7 @@ public class WarehouserController {
             @ApiResponse(code = 4000, message = "请求失败")
     })
     @GetMapping("/list")
-    public CustomResponse list(@RequestParam int page, @RequestParam int size, HttpServletRequest request) {
+    public CustomResponse<Warehouse> list(@RequestParam int page, @RequestParam int size, HttpServletRequest request) {
         return warehouserService.list(page, size, request);
     }
 }

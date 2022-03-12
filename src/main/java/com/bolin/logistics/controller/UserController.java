@@ -97,7 +97,7 @@ public class UserController {
             @ApiResponse(code = 4000, message = "请求失败")
     })
     @GetMapping("/list")
-    public CustomResponse list(@RequestParam int page, @RequestParam int size, HttpServletRequest request) {
+    public CustomResponse<User> list(@RequestParam int page, @RequestParam int size, HttpServletRequest request) {
         return userService.list(page, size, request);
     }
 
@@ -107,7 +107,7 @@ public class UserController {
             @ApiResponse(code = 4000, message = "请求失败")
     })
     @GetMapping("/listByType")
-    public CustomResponse listByType(@RequestParam int page, @RequestParam int size, @RequestParam int type, HttpServletRequest request) {
+    public CustomResponse<User> listByType(@RequestParam int page, @RequestParam int size, @RequestParam int type, HttpServletRequest request) {
         return userService.list(type, page, size, request);
     }
 
@@ -117,7 +117,7 @@ public class UserController {
             @ApiResponse(code = 4000, message = "请求失败")
     })
     @GetMapping("/getUserByToken")
-    public CustomResponse getUserByToken(HttpServletRequest request) {
+    public CustomResponse<User> getUserByToken(HttpServletRequest request) {
         return userService.getUserByToken(request);
     }
 }

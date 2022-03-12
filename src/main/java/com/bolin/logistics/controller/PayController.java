@@ -55,7 +55,7 @@ public class PayController {
             @ApiResponse(code = 4000, message = "请求失败")
     })
     @GetMapping("/list")
-    public CustomResponse list(@RequestParam int page, @RequestParam int size, HttpServletRequest request) {
+    public CustomResponse<Pay> list(@RequestParam int page, @RequestParam int size, HttpServletRequest request) {
         return payService.list(page, size, request);
     }
 }
