@@ -26,7 +26,7 @@ public class CarService {
     public CustomResponse addCar(HttpServletRequest request, Car car) {
         try {
             User checkedUser = userService.checkUser(request);
-            if (checkedUser.getTypeId() != UserEnum.ADMIN.getType() || checkedUser.getTypeId() != UserEnum.OPERATOR.getType()) {
+            if (checkedUser.getTypeId() != UserEnum.ADMIN.getType()) {
                 throw new CustomizeException(CustomizeErrorCodeImpl.AUTHORIZE_FAIL);
             }
             car.setGmtCreate(System.currentTimeMillis());

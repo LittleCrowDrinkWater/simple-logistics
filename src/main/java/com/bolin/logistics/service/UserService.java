@@ -196,7 +196,9 @@ public class UserService {
             userExample.createCriteria()
                     .andIdEqualTo(user.getId());
             userMapper.updateByExampleSelective(user, userExample);
-            response.addCookie(new Cookie("token", token));
+            Cookie cookie = new Cookie("token", token);
+            cookie.setPath("/");
+            response.addCookie(cookie);
             return CustomResponse.loginSuccess(token);
         } catch (Exception e) {
             return CustomResponse.loginFailed();

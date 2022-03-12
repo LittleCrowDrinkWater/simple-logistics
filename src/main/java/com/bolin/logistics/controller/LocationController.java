@@ -29,7 +29,6 @@ public class LocationController {
     public CustomResponse addLocation(@RequestBody Location location,  HttpServletRequest request) {
         return locationService.addLocation(request, location);
     }
-
     @ApiOperation(value = "修改仓库地址", notes = "修改仓库地址,传入id和需要修改的字段,无需修改的字段传空即可", produces = "application/json")
     @ApiResponses({
             @ApiResponse(code = 2002, message = "更新成功"),

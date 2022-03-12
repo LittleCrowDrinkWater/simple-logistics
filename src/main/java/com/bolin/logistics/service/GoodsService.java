@@ -38,7 +38,7 @@ public class GoodsService {
     public CustomResponse addGoodsInfo(HttpServletRequest request, GoodsInfo goodsInfo) {
         try {
             User checkedUser = userService.checkUser(request);
-            if (checkedUser.getTypeId() != UserEnum.OPERATOR.getType() || checkedUser.getTypeId() == UserEnum.ADMIN.getType()) {
+            if (checkedUser.getTypeId() != UserEnum.OPERATOR.getType() && checkedUser.getTypeId() != UserEnum.ADMIN.getType()) {
                 throw new CustomizeException(CustomizeErrorCodeImpl.AUTHORIZE_FAIL);
             }
             Warehouse warehouse = warehouseMapper.selectByPrimaryKey(goodsInfo.getDeliveryWarehouse());
