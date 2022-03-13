@@ -54,22 +54,22 @@ public class GoodsService {
                 return CustomResponse.loginFailed();
             else
                 return CustomResponse.addFailed();
-        }catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return CustomResponse.addFailed();
         }
     }
 
     @Transactional
-    public CustomResponse deliver(String id , HttpServletRequest request) {
+    public CustomResponse deliver(String id, HttpServletRequest request) {
         try {
-            long  goodsBillId = Long.parseLong(id);
+            long goodsBillId = Long.parseLong(id);
             User checkedUser = userService.checkUser(request);
             if (checkedUser.getTypeId() != UserEnum.OPERATOR.getType() && checkedUser.getTypeId() != UserEnum.ADMIN.getType()) {
                 throw new CustomizeException(CustomizeErrorCodeImpl.AUTHORIZE_FAIL);
             }
             GoodsInfo info = goodsInfoMapper.selectByPrimaryKey(goodsBillId);
-            if (!checkedUser.getId().equals(info.getOperateUserId())){
+            if (!checkedUser.getId().equals(info.getOperateUserId()) && checkedUser.getTypeId() != UserEnum.ADMIN.getType()) {
                 throw new CustomizeException(CustomizeErrorCodeImpl.AUTHORIZE_FAIL);
             }
             GoodsInfo goodsInfo = new GoodsInfo();
@@ -86,22 +86,23 @@ public class GoodsService {
                 return CustomResponse.loginFailed();
             else
                 return CustomResponse.updateFailed();
-        }catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return CustomResponse.updateFailed();
         }
     }
+
     @Transactional
-    public CustomResponse driverAccept(String id ,HttpServletRequest request) {
+    public CustomResponse driverAccept(String id, HttpServletRequest request) {
         try {
-            long  goodsBillId = Long.parseLong(id);
+            long goodsBillId = Long.parseLong(id);
             GoodsInfo info = goodsInfoMapper.selectByPrimaryKey(goodsBillId);
             Car car = carMapper.selectByPrimaryKey(info.getCarId());
             User checkedUser = userService.checkUser(request);
-            if (!(checkedUser.getTypeId() == UserEnum.DRIVER.getType())) {
+            if (checkedUser.getTypeId() == UserEnum.DRIVER.getType() && checkedUser.getTypeId() != UserEnum.ADMIN.getType()) {
                 throw new CustomizeException(CustomizeErrorCodeImpl.AUTHORIZE_FAIL);
             }
-            if (!(checkedUser.getId().equals(car.getUserId()))){
+            if (!checkedUser.getId().equals(car.getUserId()) && checkedUser.getTypeId() != UserEnum.ADMIN.getType()) {
                 throw new CustomizeException(CustomizeErrorCodeImpl.AUTHORIZE_FAIL);
             }
             GoodsInfo goodsInfo = new GoodsInfo();
@@ -117,23 +118,23 @@ public class GoodsService {
                 return CustomResponse.loginFailed();
             else
                 return CustomResponse.updateFailed();
-        }catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return CustomResponse.updateFailed();
         }
     }
 
     @Transactional
-    public CustomResponse driverArrive(String id ,HttpServletRequest request) {
+    public CustomResponse driverArrive(String id, HttpServletRequest request) {
         try {
             User checkedUser = userService.checkUser(request);
-            if (!(checkedUser.getTypeId() == UserEnum.DRIVER.getType())) {
+            if (!(checkedUser.getTypeId() == UserEnum.DRIVER.getType()) && checkedUser.getTypeId() != UserEnum.ADMIN.getType()) {
                 throw new CustomizeException(CustomizeErrorCodeImpl.AUTHORIZE_FAIL);
             }
-            long  goodsBillId = Long.parseLong(id);
+            long goodsBillId = Long.parseLong(id);
             GoodsInfo info = goodsInfoMapper.selectByPrimaryKey(goodsBillId);
             Car car = carMapper.selectByPrimaryKey(info.getCarId());
-            if (checkedUser.getId().equals(car.getUserId())){
+            if (!checkedUser.getId().equals(car.getUserId()) && checkedUser.getTypeId() != UserEnum.ADMIN.getType()) {
                 throw new CustomizeException(CustomizeErrorCodeImpl.AUTHORIZE_FAIL);
             }
             Warehouse receiveWarehouse = warehouseMapper.selectByPrimaryKey(info.getReceivingWarehouse());
@@ -150,30 +151,29 @@ public class GoodsService {
             CarExample carExample = new CarExample();
             carExample.createCriteria()
                     .andIdEqualTo(car.getId());
-            carMapper.updateByExampleSelective(car , carExample);
+            carMapper.updateByExampleSelective(car, carExample);
             return CustomResponse.updateSuccess();
         } catch (CustomizeException e) {
             if (e.getCode() == CustomizeErrorCodeImpl.NO_LOGIN.getCode())
                 return CustomResponse.loginFailed();
             else
                 return CustomResponse.updateFailed();
-        }catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return CustomResponse.updateFailed();
         }
     }
 
     @Transactional
-    public CustomResponse storage(String id ,HttpServletRequest request) {
+    public CustomResponse storage(String id, HttpServletRequest request) {
         try {
             User checkedUser = userService.checkUser(request);
-            if (checkedUser.getTypeId() == UserEnum.CUSTOMER.getType()) {
+            if (checkedUser.getTypeId() != UserEnum.OPERATOR.getType() && checkedUser.getTypeId() != UserEnum.ADMIN.getType()) {
                 throw new CustomizeException(CustomizeErrorCodeImpl.AUTHORIZE_FAIL);
             }
-            long  goodsBillId = Long.parseLong(id);
+            long goodsBillId = Long.parseLong(id);
             GoodsInfo info = goodsInfoMapper.selectByPrimaryKey(goodsBillId);
-            Car car = carMapper.selectByPrimaryKey(info.getCarId());
-            if (checkedUser.getId().equals(car.getUserId())){
+            if (!checkedUser.getId().equals(info.getOperateUserId()) && checkedUser.getTypeId() != UserEnum.ADMIN.getType()) {
                 throw new CustomizeException(CustomizeErrorCodeImpl.AUTHORIZE_FAIL);
             }
             GoodsInfo goodsInfo = new GoodsInfo();
@@ -189,26 +189,26 @@ public class GoodsService {
                 return CustomResponse.loginFailed();
             else
                 return CustomResponse.updateFailed();
-        }catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return CustomResponse.updateFailed();
         }
     }
 
     @Transactional
-    public CustomResponse receive(String id ,HttpServletRequest request) {
+    public CustomResponse receive(String id, HttpServletRequest request) {
         try {
             User checkedUser = userService.checkUser(request);
             if (checkedUser.getTypeId() == UserEnum.CUSTOMER.getType()) {
                 throw new CustomizeException(CustomizeErrorCodeImpl.AUTHORIZE_FAIL);
             }
-            long  goodsBillId = Long.parseLong(id);
+            long goodsBillId = Long.parseLong(id);
             TransferInfoExample transferInfoExample = new TransferInfoExample();
             transferInfoExample.createCriteria()
                     .andStatusNotEqualTo(LogisticsStatusEnum.ARCHIVE.getType())
                     .andGoodsInfoIdEqualTo(goodsBillId);
             List<TransferInfo> transferInfos = transferInfoMapper.selectByExample(transferInfoExample);
-            if (transferInfos.size() > 0){
+            if (transferInfos.size() > 0) {
                 throw new CustomizeException(CustomizeErrorCodeImpl.EXIST_TRANSFER_ORDER);
             }
             GoodsInfo goodsInfo = new GoodsInfo();
@@ -224,7 +224,7 @@ public class GoodsService {
                 return CustomResponse.loginFailed();
             else
                 return CustomResponse.updateFailed();
-        }catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return CustomResponse.updateFailed();
         }
@@ -234,7 +234,7 @@ public class GoodsService {
     public CustomResponse deleteGoodsInfo(HttpServletRequest request, long goodsInfoId) {
         try {
             User checkedUser = userService.checkUser(request);
-            if (checkedUser.getTypeId() == UserEnum.DRIVER.getType()) {
+            if (checkedUser.getTypeId() != UserEnum.ADMIN.getType() && checkedUser.getTypeId() != UserEnum.OPERATOR.getType()) {
                 throw new CustomizeException(CustomizeErrorCodeImpl.AUTHORIZE_FAIL);
             }
             GoodsInfoExample example = new GoodsInfoExample();
@@ -247,7 +247,7 @@ public class GoodsService {
                 return CustomResponse.loginFailed();
             else
                 return CustomResponse.deleteFailed();
-        }catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return CustomResponse.deleteFailed();
         }
@@ -259,7 +259,7 @@ public class GoodsService {
             if (checkedUser.getTypeId() == UserEnum.ADMIN.getType()) {
                 GoodsInfoExample example = new GoodsInfoExample();
                 example.setOrderByClause("gmt_modified");
-                PageHelper.startPage(page , size);
+                PageHelper.startPage(page, size);
                 List<GoodsInfo> goodsInfos = goodsInfoMapper.selectByExample(example);
                 return CustomResponse.success(goodsInfos);
             }
@@ -270,7 +270,7 @@ public class GoodsService {
                         .andStatusNotEqualTo(LogisticsStatusEnum.ARCHIVE.getType())
                         .andStatusNotEqualTo(LogisticsStatusEnum.IN_TRANSIT.getType());
                 example.setOrderByClause("gmt_modified");
-                PageHelper.startPage(page , size);
+                PageHelper.startPage(page, size);
                 List<GoodsInfo> goodsInfos = goodsInfoMapper.selectByExample(example);
                 return CustomResponse.success(goodsInfos);
             }
@@ -286,7 +286,7 @@ public class GoodsService {
                         .andStatusNotEqualTo(LogisticsStatusEnum.ARCHIVE.getType())
                         .andStatusNotEqualTo(LogisticsStatusEnum.IN_WAREHOUSE.getType());
                 example.setOrderByClause("gmt_modified");
-                PageHelper.startPage(page , size);
+                PageHelper.startPage(page, size);
                 List<GoodsInfo> goodsInfos = goodsInfoMapper.selectByExample(example);
                 return CustomResponse.success(goodsInfos);
             }
@@ -299,7 +299,7 @@ public class GoodsService {
                 example.or(criteria1);
                 example.or(criteria2);
                 example.setOrderByClause("gmt_modified");
-                PageHelper.startPage(page , size);
+                PageHelper.startPage(page, size);
                 List<GoodsInfo> goodsInfos = goodsInfoMapper.selectByExample(example);
                 return CustomResponse.success(goodsInfos);
             }
